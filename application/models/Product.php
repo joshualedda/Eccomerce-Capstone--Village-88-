@@ -35,9 +35,7 @@ class Product extends CI_Model
 		return $query->result_array();
 	}
 
-
-
-
+	//insert product
 	public function addProduct()
 	{
 		$this->form_validation->set_rules('product', 'Product', 'required');
@@ -75,21 +73,19 @@ class Product extends CI_Model
 		}
 	}
 
+	//insert multiple images from the uploads
 	public function uploadImages()
 	{
 		$uploaded_images = array();
 		$config['upload_path'] = 'assets/uploads/';
 		$config['allowed_types'] = 'jpg|jpeg|png|gif';
-		$config['max_size'] = 2048; // 2MB limit (adjust as needed)
+		$config['max_size'] = 2048; // 2MB limit 
 		$this->load->library('upload', $config);
 
-		// Check if the number of uploaded images exceeds the limit
 		if (count($_FILES['images']['name']) > 5) {
 			$this->session->set_flashdata('error_message', 'Maximum 5 images allowed.');
-			redirect('products/create'); // Redirect to the form with an error message
 		}
 
-		// Loop through each uploaded file
 		foreach ($_FILES['images']['name'] as $key => $image) {
 			$_FILES['userfile']['name'] = $_FILES['images']['name'][$key];
 			$_FILES['userfile']['type'] = $_FILES['images']['type'][$key];
@@ -99,10 +95,10 @@ class Product extends CI_Model
 
 			if ($this->upload->do_upload('userfile')) {
 				$data = $this->upload->data();
-				$uploaded_images[] = $data['file_name']; // Store uploaded file names
+				$uploaded_images[] = $data['file_name']; 
 			} else {
 				$this->session->set_flashdata('error_message', $this->upload->display_errors());
-				redirect('products/create'); // Redirect to the form with an error message
+				redirect('products/create');
 			}
 		}
 
