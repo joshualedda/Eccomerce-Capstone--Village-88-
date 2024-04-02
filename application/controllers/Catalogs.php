@@ -10,18 +10,11 @@ class Catalogs extends CI_Controller
 		$this->load->view('partials/header', $this->data);
 		$this->load->view('partials/menu', $this->data);
 		$this->load->view('partials/alert', $this->data);
+		$this->load->view('partials/toast');
 		$this->load->view('catalog/index', $data);
 		$this->load->view('partials/footer');
 	}
 
-
-
-	public function csrf()
-	{
-		if ($this->input->post($this->security->get_csrf_token_name()) !== $this->security->get_csrf_hash()) {
-			$this->session->set_flashdata('error_message', 'Please login first.');
-		}
-	}
 
 
 
@@ -33,8 +26,6 @@ class Catalogs extends CI_Controller
 			redirect($_SERVER['HTTP_REFERER']);
 			return;
 		}
-
-		$this->csrf();
 
 		$result = $this->Catalog->createCart();
 

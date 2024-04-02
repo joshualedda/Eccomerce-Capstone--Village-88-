@@ -23,18 +23,19 @@
 									</a>
 								</h5>
 								<div>
-									<span class="selling-price">₱<?= $product['price'] ?></span>
+									<span class="selling-price">$<?= $product['price'] ?></span>
 								</div>
-								<form action="<?=base_url('catalogs/addToCart') ?>" method="POST">
+								<form id="addToCart" action="<?= base_url('catalogs/addToCart') ?>" method="POST">
 									<div class="mt-2">
-										<input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
-										<input type="hidden" name="product_id" value="<?=$product['productId'] ?>"/>
-										<input type="hidden" name="quantity" value="1"/>
-										<input type="submit" class="btn btn1" value="Add To Cart"/>
-										<a href="" class="btn btn1"> <i class="bi bi-heart"></i> </a>
+										<input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" id="csrf_token" value="<?= $this->security->get_csrf_hash(); ?>">
+										<input type="hidden" name="product_id" value="<?= $product['productId'] ?>" />
+										<input type="hidden" name="quantity" value="1" />
+										<input type="submit" id="addToCartBtn" class="btn btn1" value="Add To Cart" /> <!-- Use type="button" to prevent default form submission -->
+										<a href="#" class="btn btn1"> <i class="bi bi-heart"></i> </a>
 										<a href="<?= base_url('product/view/' . $product['productId']) ?>" class="btn btn1"> View </a>
 									</div>
 								</form>
+
 							</div>
 						</div>
 					</div>
@@ -46,11 +47,4 @@
 		</div>
 	</div>
 
-
-
 </section>
-
-
-<style>
-
-</style>

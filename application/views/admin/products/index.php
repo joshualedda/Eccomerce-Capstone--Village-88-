@@ -17,7 +17,9 @@
 			<div class="search-bar me-2 col-md-3">
 
 				<form method="POST" action="<?= base_url('product/search') ?>" id="filterProduct" class="search-form d-flex align-items-center">
-					<select id="category" class="form-select " name="category">
+				<input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
+					
+				<select id="category" class="form-select " name="category">
 						<option selected value="">Choose Below</option>
 						<?php foreach ($categories as $category) : ?>
 							<option value="<?= $category['id']; ?>"><?= $category['category']; ?></option>

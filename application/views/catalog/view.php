@@ -25,7 +25,7 @@
 						Catalogs / Product / <?=$product['name'] ?>
 					</p>
 					<div>
-						<span class="selling-price">₱ <?=$product['price'] ?></span>
+						<span class="selling-price">$ <?=$product['price'] ?></span>
 						<!-- <span class="original-price">$499</span> -->
 					</div>
 					<div class="mt-2">

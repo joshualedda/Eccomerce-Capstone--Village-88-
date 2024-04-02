@@ -21,7 +21,7 @@ class Catalog extends CI_Model
 
 		$sql = "INSERT INTO carts(user_id, product_id, quantity) VALUES
 		(?, ?, ?)";
-		$query = $this->db->query($sql, array($product_id, $user_id, $quantity));
+		$query = $this->db->query($sql, array( $user_id, $product_id, $quantity));
 
 		if ($query) {
 			return array('success' => true);
