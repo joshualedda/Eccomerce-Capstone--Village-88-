@@ -7,14 +7,7 @@
 
  				</div>
  				<div class="col-md-5 my-auto">
- 					<form role="search">
- 						<div class="input-group">
- 							<input type="search" placeholder="Search your product" class="form-control" />
- 							<button class="input-group-text" type="submit">
- 								<i class="bi bi-search"></i>
- 							</button>
- 						</div>
- 					</form>
+ 				
  				</div>
 				 <?php if (isset($is_logged_in) && $is_logged_in) : ?>
  					<div class="col-md-5 my-auto">

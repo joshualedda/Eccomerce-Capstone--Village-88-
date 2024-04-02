@@ -20,9 +20,36 @@ class Carts extends CI_Controller
 		$user_id = $this->session->userdata('id');
 		$user_data = $this->User->getUserById($user_id);
 		$is_logged_in = $this->session->userdata('logged_in');
-	
+
 		$this->data['user_data'] = $user_data;
 		$this->data['is_logged_in'] = $is_logged_in;
 	}
+
+	//update carts
+	public function updateQuantity()
+	{
+		$cartId = $this->input->post('cart_id');
+		$quantity = $this->input->post('quantity');
+
+
+		$this->Cart->updateCartQuantity($cartId, $quantity);
+
+		echo json_encode(['success' => true]);
+	}
+
+		public function removeCartItem()
+		{
+			$cartId = $this->input->post('cart_id');
+
+			$this->db->where('id', $cartId);
+			$this->db->delete('carts');
+
+			// Check if the delete operation was successful
+			if ($this->db->affected_rows() > 0) {
+				echo json_encode(['success' => true]);
+			} else {
+				echo json_encode(['success' => false, 'error' => 'Error removing item from cart']);
+			}
+		}
 
 }

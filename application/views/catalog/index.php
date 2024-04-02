@@ -1,10 +1,65 @@
 <section class="container my-5">
 	<div class="py-3 py-md-5">
 		<div class="container">
-			<div class="row">
-				<div class="col-md-12">
-					<h4 class="mb-4">All Products</h4>
+
+
+			<div class="col-md">
+				<h4 class="mb-4">All Products</h4>
+			</div>
+			<form method="POST" action="<?= base_url('product/search') ?>" id="filterCatalogs">
+				<div class="d-flex justify-content-end align-items-center my-2">
+
+
+					<div class="search-bar col-md-6">
+						<div class="search-form d-flex align-items-center">
+
+							<input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
+
+							<select id="category" class="form-select " name="category">
+								<option selected value="">All Product</option>
+								<?php foreach ($categories as $category) : ?>
+									<option value="<?= $category['id']; ?>"><?= $category['category']; ?></option>
+								<?php endforeach; ?>
+							</select>
+
+							<input type="text" name="name" class="form-control mx-2" placeholder="Search" title="Enter search keyword">
+
+						</div>
+					</div>
 				</div>
+
+
+				<div class="row">
+
+					<div class="col-md-2">
+
+
+
+						<label for="" class="form-label">Price</label>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="price_order" id="highToLow" value="desc" checked>
+							<label class="form-check-label" for="highToLow">
+								High to low
+							</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="price_order" id="lowToHigh" value="asc">
+							<label class="form-check-label" for="lowToHigh">
+								Low to high
+							</label>
+						</div>
+
+
+
+			</form>
+		</div>
+
+
+
+		<div class="col-md-10">
+
+
+			<div class="row" id="catalogData">
 
 				<?php foreach ($products as $product) : ?>
 					<div class="col-md-3">
@@ -25,26 +80,76 @@
 								<div>
 									<span class="selling-price">$<?= $product['price'] ?></span>
 								</div>
-								<form id="addToCart" action="<?= base_url('catalogs/addToCart') ?>" method="POST">
+								<form class="addToCartForm" action="<?= base_url('catalogs/addToCart') ?>" method="POST">
 									<div class="mt-2">
-										<input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" id="csrf_token" value="<?= $this->security->get_csrf_hash(); ?>">
-										<input type="hidden" name="product_id" value="<?= $product['productId'] ?>" />
-										<input type="hidden" name="quantity" value="1" />
-										<input type="submit" id="addToCartBtn" class="btn btn1" value="Add To Cart" /> <!-- Use type="button" to prevent default form submission -->
+										<!-- CSRF token -->
+										<input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" class="csrf_token" value="<?= $this->security->get_csrf_hash(); ?>">
+										<!-- Product ID and Quantity -->
+										<input type="hidden" name="product_id" class="productId" value="<?= $product['productId'] ?>" />
+										<input type="hidden" name="quantity" class="quantity" value="1" />
+										<!-- Add To Cart button -->
+										<input type="submit" class="btn btn1 addToCartBtn" value="Add To Cart" />
+
+										<!-- Other buttons -->
 										<a href="#" class="btn btn1"> <i class="bi bi-heart"></i> </a>
 										<a href="<?= base_url('product/view/' . $product['productId']) ?>" class="btn btn1"> View </a>
 									</div>
 								</form>
-
 							</div>
 						</div>
 					</div>
 				<?php endforeach; ?>
-
-
-
 			</div>
 		</div>
+
+	</div>
+	</div>
 	</div>
 
 </section>
+
+
+<script>
+	$(document).ready(function() {
+		$('.addToCartForm').submit(function(e) {
+			e.preventDefault();
+
+			var formData = new FormData($(this)[0]);
+
+			$.ajax({
+				type: 'POST',
+				url: $(this).attr('action'),
+				data: formData,
+				processData: false,
+				contentType: false,
+				success: function(response) {
+					$("#message").html("Added To Cart.");
+					$("#liveToast").removeClass("hide");
+					$(".toast").toast("show");
+				},
+				error: function(xhr, status, error) {
+					console.error(error);
+					alert('Error adding product to cart. Please try again.');
+				}
+			});
+		});
+//Search
+$('#filterCatalogs input[name="name"], #filterCatalogs select[name="category"], #filterCatalogs input[name="price_order"]').on('input change', function() {
+			var formData = $('#filterCatalogs').serialize();
+			$.ajax({
+				type: 'POST',
+				url: '<?= base_url('catalog/search'); ?>',
+				data: formData,
+				success: function(response) {
+					$('#catalogData').html(response);
+				},
+				error: function(xhr, status, error) {
+					console.log(error);
+				}
+			});
+		});
+
+
+	});
+</script>
+

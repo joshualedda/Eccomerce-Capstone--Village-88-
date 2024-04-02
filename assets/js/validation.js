@@ -41,20 +41,20 @@ $(document).ready(function () {
 	 $("#createProduct").submit(function (e) {
         e.preventDefault();
         if (validateForm()) {
-            var formData = new FormData(this); // Create FormData object from the form
+            var formData = new FormData(this); 
             $.ajax({
                 url: $(this).attr("action"),
                 type: "POST",
                 data: formData,
-                processData: false, // Prevent jQuery from processing the data
-                contentType: false, // Prevent jQuery from setting the content type automatically
+                processData: false, 
+                contentType: false, 
                 success: function (response) {
                     $("#message").html("Product Successfully Added.");
                     $("#liveToast").removeClass("hide");
                     $(".toast").toast("show");
                     $("#createProduct")[0].reset();
                     $(".error-message").text("");
-                    $("#imagePreview").empty(); // Clear preview after successful submission
+                    $("#imagePreview").empty(); 
                 },
                 error: function (xhr, status, error) {
                     console.error(xhr.responseText);
@@ -106,4 +106,8 @@ $(document).ready(function () {
 
 		return isValid;
 	}
+
+	//Catalogs
+	
+
 });

@@ -2,8 +2,6 @@
 
 class Product extends CI_Model
 {
-	public $users = "users";
-
 	public function __construct()
 	{
 		$this->load->database();
@@ -49,7 +47,7 @@ class Product extends CI_Model
                              LIMIT 1";
 			$newestImage = $this->db->query($newestImageQuery, array($productId))->row_array();
 
-			return $newestImage ? $newestImage : array(); 
+			return $newestImage ? $newestImage : array();
 		}
 	}
 
@@ -84,8 +82,6 @@ class Product extends CI_Model
 	}
 
 
-
-
 	//get single product
 	public function getProduct($productId)
 	{
@@ -93,7 +89,22 @@ class Product extends CI_Model
 		$query = $this->db->query($sql, array($productId));
 		return $query->row_array();
 	}
-	//
+
+	//Similar items in View
+	public function getSimilarItems($categoryId)
+	{
+		$sql = "SELECT products.id AS productId, products.name, products.description, products.price, products.stocks, 
+		COALESCE(images.image, (SELECT image FROM images WHERE product_id = products.id LIMIT 1)) AS main_image_url
+		FROM products
+		LEFT JOIN images ON images.product_id = products.id AND images.main = 1
+		WHERE products.category_id = ?";
+
+		$query = $this->db->query($sql, array($categoryId));
+		return $query->result_array();
+	}
+
+
+	//Get product Image
 	public function getProductImages($productId)
 	{
 		$sql = "SELECT * FROM images WHERE product_id = ?";
@@ -230,4 +241,44 @@ class Product extends CI_Model
 				WHERE id = ?";
 		$this->db->query($sql, array($imageId));
 	}
+
+	//Search Catalog
+	public function filterCatalog($name, $categoryId, $priceOrder)
+	{
+		$sql = "SELECT products.id AS productId, products.name, products.description, products.price, products.stocks, 
+				COALESCE(images.image, (SELECT image FROM images WHERE product_id = products.id AND images.main = 1 LIMIT 1)) AS main_image_url
+				FROM products
+				LEFT JOIN images ON images.product_id = products.id
+				WHERE 1";
+	
+		$params = [];
+	
+		if (!empty($name)) {
+			$sql .= " AND (products.name LIKE ? OR products.description LIKE ?)";
+			$nameLike = "%$name%";
+			$params[] = $nameLike;  // Add to params array instead of overwriting
+			$params[] = $nameLike;  // Add again for the second parameter
+		}
+	
+		if (!empty($categoryId)) {
+			$sql .= " AND products.category_id = ?";
+			$params[] = $categoryId;
+		}
+	
+		// Apply price ordering based on user selection
+		if ($priceOrder == 'desc') {
+			$sql .= " ORDER BY products.price DESC";
+		} elseif ($priceOrder == 'asc') {
+			$sql .= " ORDER BY products.price ASC";
+		} else {
+			$sql .= " ORDER BY products.created_at DESC"; // Default order
+		}
+	
+		$query = $this->db->query($sql, $params);
+	
+		return $query->result_array();
+	}
+	
+
+
 }

@@ -52,7 +52,8 @@ $route['category'] = 'categories';
 //Product Catalog View
 //it should be product name heree stil in development
 $route['product/view/(:num)'] = 'catalogs/view/$1';
-
+//Catalog Seach
+$route['catalog/search'] = 'catalogs/index';
 
 
 //Carts

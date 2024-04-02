@@ -19,14 +19,26 @@ class Catalog extends CI_Model
 		$user_id = $this->session->userdata('id');
 		$quantity = $this->security->xss_clean($this->input->post('quantity'));
 
-		$sql = "INSERT INTO carts(user_id, product_id, quantity) VALUES
-		(?, ?, ?)";
-		$query = $this->db->query($sql, array( $user_id, $product_id, $quantity));
+		$existing_cart_item = $this->db->get_where('carts', array('user_id' => $user_id, 'product_id' => $product_id))->row_array();
 
-		if ($query) {
+		if ($existing_cart_item) {
+			$new_quantity = $existing_cart_item['quantity'] + $quantity;
+
+			$sql = "UPDATE carts SET quantity = ? WHERE id = ?";
+			$this->db->query($sql, array($new_quantity, $existing_cart_item['id']));
+
 			return array('success' => true);
 		} else {
-			return array('success' => false, 'error' => 'Error.');
+			$data = array(
+				'user_id' => $user_id,
+				'product_id' => $product_id,
+				'quantity' => $quantity
+			);
+
+			$sql = "INSERT INTO carts (user_id, product_id, quantity) VALUES (?, ?, ?)";
+			$this->db->query($sql, array($user_id, $product_id, $quantity));
+
+			return array('success' => true);
 		}
 	}
 }

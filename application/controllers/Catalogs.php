@@ -5,7 +5,16 @@ class Catalogs extends CI_Controller
 {
 	public function index()
 	{
+		if ($this->input->is_ajax_request()) {
+		$name = $this->input->post('name');
+		$category = $this->input->post('category');
+		$priceOrder = $this->input->post('price_order');
+		$data['products'] = $this->Product->filterCatalog($name, $category, $priceOrder);
+		$this->load->view('components/catalogsPartial', $data);
+
+		} else {
 		$data['products'] = $this->Product->getProductsWithMainImages();
+		$data['categories'] = $this->Category->getCategories();
 		$this->prepareUserData();
 		$this->load->view('partials/header', $this->data);
 		$this->load->view('partials/menu', $this->data);
@@ -15,7 +24,16 @@ class Catalogs extends CI_Controller
 		$this->load->view('partials/footer');
 	}
 
+	}
 
+
+
+	public function crsf()
+	{
+		if ($this->input->post($this->security->get_csrf_token_name()) !== $this->security->get_csrf_hash()) {
+			$this->session->set_flashdata('error', 'Please login first.');
+		}
+	}
 
 
 	public function addToCart()
@@ -26,6 +44,7 @@ class Catalogs extends CI_Controller
 			redirect($_SERVER['HTTP_REFERER']);
 			return;
 		}
+		$this->crsf();
 
 		$result = $this->Catalog->createCart();
 
@@ -43,6 +62,9 @@ class Catalogs extends CI_Controller
 	{
 		$data['product'] = $this->Product->getProduct($productId);
 		$data['image'] = $this->Product->getProductMainImage($productId);
+
+		$categoryId = $data['product']['category_id'];
+		$data['items'] = $this->Product->getSimilarItems($categoryId);
 	
 		if ($data['product']) {
 			$data['title'] = $data['product']['name'];
@@ -53,7 +75,8 @@ class Catalogs extends CI_Controller
 		$this->prepareUserData();
 	
 		$this->load->view('partials/header', $data);
-		$this->load->view('partials/menu', $this->data); // Pass $this->data to the menu view
+		$this->load->view('partials/menu', $this->data); 
+		$this->load->view('partials/toast');
 		$this->load->view('partials/alert');
 		$this->load->view('catalog/view', $data);
 		$this->load->view('partials/footer');
