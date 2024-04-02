@@ -11,5 +11,5 @@
 	<link rel="stylesheet" href="<?=base_url('assets/css/style.css') ?>">
 	<title><?php echo isset($title) ? $title : 'Eccomerce'; ?></title>
 </head>
-<body>
+<body class="">
 	

@@ -15,6 +15,8 @@ class Users extends CI_Controller
 		$this->load->view('auth/login');
 		$this->load->view('partials/footer');
 	}
+
+
 	public function register()
 	{
 		if ($this->session->userdata('logged_in')) {
@@ -43,9 +45,9 @@ class Users extends CI_Controller
 			$this->session->set_userdata($user_data);
 
 			if ($user['role'] == 0) {
-				redirect('dashboard');
+				redirect('catalogs');
 			} elseif ($user['role'] == 1) {
-				redirect('dashboard/admin');
+				redirect('dashboard');
 			}
 		} else {
 			$data['error_message'] = $result['error'];

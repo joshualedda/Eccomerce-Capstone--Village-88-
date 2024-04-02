@@ -9,6 +9,8 @@
 			</div>
 			<div class="card-body">
 				<form action="<?= base_url('login/process') ?>" method="POST">
+				<input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
+
 					<div class="mb-3">
 						<label for="email" class="form-label">Email</label>
 						<input type="text" class="form-control" id="email" name="email" >

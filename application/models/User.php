@@ -10,6 +10,18 @@ class User extends CI_Model
 		$this->load->database();
 	}
 
+	public function getUserById($user_id)
+	{
+		$sql = "SELECT * FROM users WHERE id = ?";
+
+		$query = $this->db->query($sql, array($user_id));
+
+		if ($query->num_rows() == 1) {
+			return $query->row_array();
+		}
+
+		return null;
+	}
 	public function loginUser()
 	{
 		$this->form_validation->set_rules('email', 'Email', 'required|valid_email');

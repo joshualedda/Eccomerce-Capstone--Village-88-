@@ -37,6 +37,12 @@ $route['orders'] = 'orders';
 $route['products'] = 'products';
 //Product New
 $route['product/create'] = 'products/create';
+//products serach filer
+$route['product/search'] = 'products/index';
+
+
+
+
 
 
 //Admin Categories
@@ -45,7 +51,9 @@ $route['category'] = 'categories';
 
 //Product Catalog View
 //it should be product name heree stil in development
-$route['product/view'] = 'catalogs/view';
+$route['product/view/(:num)'] = 'catalogs/view/$1';
+
+
 
 //Carts
 $route['carts'] = 'carts';

@@ -6,7 +6,8 @@ class Orders extends CI_Controller
 
 	public function index()
 	{
-		$this->load->view('partials/header');
+		$data['title'] = 'Orders';
+		$this->load->view('partials/header', $data);
 		$this->load->view('partials/navbar');
 		$this->load->view('partials/sidebar');
 		$this->load->view('admin/orders/index');

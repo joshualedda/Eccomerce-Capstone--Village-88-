@@ -78,13 +78,17 @@
 							</div>
 						</div>
 						<div class="mt-2">
-							<?php if (!empty($images)) : ?>
-								<?php foreach ($images as $image) : ?>
-									<a href="<?= base_url('assets/uploads/' . $image['image']); ?>" target="_blank">
-										<img src="<?= base_url('assets/uploads/' . $image['image']); ?>" class="img-thumbnail" width="100">
-									</a>
-								<?php endforeach; ?>
-							<?php endif; ?>
+							<label class="form-label">Product Images</label>
+							<div>
+
+								<?php if (!empty($images)) : ?>
+									<?php foreach ($images as $image) : ?>
+										<a href="<?= base_url('assets/uploads/' . $image['image']); ?>" target="_blank">
+											<img src="<?= base_url('assets/uploads/' . $image['image']); ?>" class="img-thumbnail" width="100">
+										</a>
+									<?php endforeach; ?>
+								<?php endif; ?>
+							</div>
 						</div>
 
 

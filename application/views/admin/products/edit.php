@@ -9,6 +9,8 @@
 		</nav>
 	</div>
 
+	<?php include(APPPATH . 'views/partials/alert.php'); ?>
+
 	<div class=" d-flex justify-content-center">
 
 		<div class="col-lg-12">
@@ -20,7 +22,7 @@
 				<div class="card-body">
 					<h5 class="card-title">Product Information</h5>
 
-					<form id="updateProduct" class="row g-3" action="<?= base_url('products/update/' .$product['id']) ?>" method="POST" enctype="multipart/form-data">
+					<form id="updateProduct" class="row g-3" action="<?= base_url('products/update/' . $product['id']) ?>" method="POST" enctype="multipart/form-data">
 
 
 						<div class="col-md-12">
@@ -73,20 +75,32 @@
 							<label for="inputCity" class="form-label">Upload Image (Max 5)</label>
 							<input type="file" class="form-control" id="images" name="images[]" accept="image/*" multiple>
 							<span id="imageValidate" class="text-sm text-danger"></span>
-							<div id="imagePreview" class="mt-2">
+							<div class="mt-2" id="imagePreviewContainer">
 								<?php if (!empty($images)) : ?>
 									<?php foreach ($images as $image) : ?>
-										<a href="<?= base_url('assets/uploads/' . $image['image']); ?>" target="_blank">
-											<img src="<?= base_url('assets/uploads/' . $image['image']); ?>" class="img-thumbnail" width="100">
-										</a>
+										<div class="image-container d-inline-block mr-2 mb-2">
+											<a href="<?= base_url('assets/uploads/' . $image['image']); ?>" target="_blank">
+												<img src="<?= base_url('assets/uploads/' . $image['image']); ?>" class="img-thumbnail" width="100">
+											</a>
+											<span class="remove-image ml-1" data-image="<?= $image['id']; ?>"><i class="bi bi-x text-dark text-sm"></i></span>
+										</div>
 									<?php endforeach; ?>
 								<?php endif; ?>
 							</div>
+						</div>
 
+						<div class="mt-2">
+							<label class="form-label">Product Images</label>
+							<div>
+
+								<?php if (empty($images)) : ?>
+									<p>No Images Available</p>
+								<?php endif; ?>
+							</div>
 						</div>
 
 						<div class="text-end">
-							<input id="submitProduct" type="submit" name="submit" value="Update Product" class="btn btn-primary">
+							<input id="updateProduct" type="submit" name="submit" value="Update Product" class="btn btn-primary">
 						</div>
 
 					</form>
@@ -100,3 +114,26 @@
 	</div>
 
 </main>
+
+
+<script>
+	$(document).ready(function() {
+		$('#imagePreviewContainer').on('click', '.remove-image', function() {
+			var $removeBtn = $(this);
+			var imageId = $removeBtn.data('image');
+
+			$.ajax({
+				type: 'POST',
+				url: '<?= base_url('products/deleteImage'); ?>/' + imageId,
+				success: function(response) {
+					$removeBtn.closest('.image-container').remove();
+				},
+				error: function(xhr, status, error) {
+					console.log(error);
+				}
+			});
+		});
+
+
+	});
+</script>

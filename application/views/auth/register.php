@@ -9,6 +9,7 @@
 			</div>
 			<div class="card-body">
 				<form action="<?= base_url('signup') ?>" method="POST">
+				<input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
 
 				<div class="mb-3">
 						<label for="email" class="form-label">First Name</label>
