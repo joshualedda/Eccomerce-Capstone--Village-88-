@@ -14,7 +14,8 @@
 				<div class="mb-3">
 						<label for="email" class="form-label">First Name</label>
 						<input type="text" class="form-control" id="email" name="first_name">
-						<?= form_error('first_name', '<span class="error text-sm text-danger">', '</span>'); ?>
+						<span class="error text-sm text-danger"><?= form_error('first_name') ?></span> 
+
 
 					</div>
 
@@ -22,7 +23,8 @@
 					<div class="mb-3">
 						<label for="email" class="form-label">Last Name</label>
 						<input type="text" class="form-control" id="email" name="last_name">
-						<?= form_error('last_name', '<span class="error text-sm text-danger">', '</span>'); ?>
+						<span class="error text-sm text-danger"><?= form_error('last_name') ?></span> 
+						
 
 					</div>
 
@@ -30,20 +32,22 @@
 					<div class="mb-3">
 						<label for="email" class="form-label">Email</label>
 						<input type="email" class="form-control" id="email" name="email">
-						<?= form_error('email', '<span class="error text-sm text-danger">', '</span>'); ?>
+						<span class="error text-sm text-danger"><?= form_error('email') ?></span> 
 
 					</div>
 					<div class="mb-3">
 						<label for="password" class="form-label">Password</label>
 						<input type="password" class="form-control" id="password" name="password">
-						<?= form_error('password', '<span class="error text-sm text-danger">', '</span>'); ?>
+						<span class="error text-sm text-danger"><?= form_error('password') ?></span> 
+
+
 
 					</div>	
 					
 					<div class="mb-3">
 						<label for="password" class="form-label">Password Repeat</label>
 						<input type="password" class="form-control" id="password" name="password_repeat">
-						<?= form_error('password_repeat', '<span class="error text-sm text-danger">', '</span>'); ?>
+						<span class="error text-sm text-danger"><?= form_error('password_repeat') ?></span> 
 
 					</div>	
 

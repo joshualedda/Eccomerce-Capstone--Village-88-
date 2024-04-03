@@ -6,25 +6,39 @@ class Catalogs extends CI_Controller
 	public function index()
 	{
 		if ($this->input->is_ajax_request()) {
-		$name = $this->input->post('name');
-		$category = $this->input->post('category');
-		$priceOrder = $this->input->post('price_order');
-		$data['products'] = $this->Product->filterCatalog($name, $category, $priceOrder);
-		$this->load->view('components/catalogsPartial', $data);
+			$name = $this->input->post('name');
+			$category = $this->input->post('category');
+			$priceOrder = $this->input->post('price_order');
+			$data['products'] = $this->Product->filterCatalog($name, $category, $priceOrder);
+			$this->load->view('components/catalogsPartial', $data);
 
 		} else {
-		$data['products'] = $this->Product->getProductsWithMainImages();
-		$data['categories'] = $this->Category->getCategories();
-		$this->prepareUserData();
-		$this->load->view('partials/header', $this->data);
-		$this->load->view('partials/menu', $this->data);
-		$this->load->view('partials/alert', $this->data);
-		$this->load->view('partials/toast');
-		$this->load->view('catalog/index', $data);
-		$this->load->view('partials/footer');
-	}
+			$data['products'] = $this->Product->getProductsWithMainImages();
+			$data['categories'] = $this->Category->getCategories();
+			
+			$this->prepareUserData();
+			$this->load->view('partials/header', $this->data);
+			$this->load->view('partials/menu', $this->data);
+			$this->load->view('partials/alert', $this->data);
+			$this->load->view('partials/toast');
+			$this->load->view('catalog/index', $data);
+			$this->load->view('partials/footer');
+		}
 
 	}
+
+	private function prepareUserData()
+	{
+		$user_id = $this->session->userdata('id');
+		$user_data = $this->User->getUserById($user_id);
+		$is_logged_in = $this->session->userdata('logged_in');
+		$user_role = $this->session->userdata('role');
+
+		$this->data['user_data'] = $user_data;
+		$this->data['is_logged_in'] = $is_logged_in;
+		$this->data['role'] = $user_role;
+	}
+
 
 
 
@@ -65,31 +79,23 @@ class Catalogs extends CI_Controller
 
 		$categoryId = $data['product']['category_id'];
 		$data['items'] = $this->Product->getSimilarItems($categoryId);
-	
+
 		if ($data['product']) {
 			$data['title'] = $data['product']['name'];
 		} else {
 			$data['title'] = 'Product Not Found';
 		}
-	
+
 		$this->prepareUserData();
-	
+
 		$this->load->view('partials/header', $data);
-		$this->load->view('partials/menu', $this->data); 
+		$this->load->view('partials/menu', $this->data);
 		$this->load->view('partials/toast');
 		$this->load->view('partials/alert');
 		$this->load->view('catalog/view', $data);
 		$this->load->view('partials/footer');
 	}
-	
-	private function prepareUserData()
-	{
-		$user_id = $this->session->userdata('id');
-		$user_data = $this->User->getUserById($user_id);
-		$is_logged_in = $this->session->userdata('logged_in');
-	
-		$this->data['user_data'] = $user_data;
-		$this->data['is_logged_in'] = $is_logged_in;
-	}
-	
+
+
+
 }

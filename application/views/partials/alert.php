@@ -1,4 +1,4 @@
-<div class="container my-2">
+<div class="container">
 
 	<?php if ($this->session->flashdata('success_message')) : ?>
 		<div class="alert alert-success alert-dismissible fade show" role="alert">

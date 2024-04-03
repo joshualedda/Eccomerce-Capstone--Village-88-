@@ -9,6 +9,17 @@
  				<div class="col-md-5 my-auto">
  				
  				</div>
+				
+				 <?php if (isset($user_role) && $user_role == 1) : ?>
+								<li class="nav-item">
+									<a class="nav-link text-dark" href="#">
+										<i class="bi bi-heart-fill"></i> Dashboard (0)
+									</a>
+								</li>
+				<?php else : ?>
+						
+				<?php endif; ?>
+
 				 <?php if (isset($is_logged_in) && $is_logged_in) : ?>
  					<div class="col-md-5 my-auto">
  						<ul class="nav justify-content-end">
@@ -23,6 +34,10 @@
  									<i class="bi bi-heart-fill"></i> Wishlist (0)
  								</a>
  							</li>
+
+
+
+
  							<li class="nav-item dropdown">
  								<a class="nav-link text-dark dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
  									<i class="bi bi-person-circle"></i>
