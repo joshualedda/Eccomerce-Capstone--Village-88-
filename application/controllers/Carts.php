@@ -20,9 +20,14 @@ class Carts extends CI_Controller
 		$user_id = $this->session->userdata('id');
 		$user_data = $this->User->getUserById($user_id);
 		$is_logged_in = $this->session->userdata('logged_in');
+		$user_role = $this->session->userdata('role');
+		$cartsTotal = $this->Cart->countCarts();
+
 
 		$this->data['user_data'] = $user_data;
 		$this->data['is_logged_in'] = $is_logged_in;
+		$this->data['role'] = $user_role;
+		$this->data['cartsTotal'] = $cartsTotal;
 	}
 
 	//update carts
@@ -32,7 +37,7 @@ class Carts extends CI_Controller
 		$quantity = $this->input->post('quantity');
 
 
-		$this->Cart->updateCartQuantity($cartId, $quantity);
+$this->Cart->updateCartQuantity($cartId, $quantity);
 
 		echo json_encode(['success' => true]);
 	}

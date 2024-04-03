@@ -44,7 +44,7 @@
 										</a>
 									</div>
 									<div class="col-md-2 my-auto">
-										<span class="price text-dark"><?= $cart['productId'] ?></span>
+										<span class="price text-dark"><?= $cart['productPrice'] ?></span>
 									</div>
 									<div class="col-md-3 col-7 my-auto">
 										<div class="quantity">
@@ -56,12 +56,12 @@
 										</div>
 									</div>
 									<div class="col-md-2 my-auto">
-										<span class="price text-dark">Total: <?= $cart['totalQuantity'] ?></span>
+									Total: $<span id="totalAmount_<?= $cart['cartId'] ?>" class="price text-dark" data-price="<?= $cart['totalPrice'] ?>"><?= $cart['totalPrice'] ?></span>
 									</div>
 									<div class="col-md-2 col-5 my-auto">
 										<div class="remove">
 											<a href="#" id="removeCart" class="btn btn-danger btn-sm">
-												<i class="bi bi-x"></i>
+												Remove
 											</a>
 										</div>
 									</div>
@@ -145,72 +145,3 @@
 </div>
 </div>
 
-
-<script>
-	$(document).ready(function() {
-    // Increase quantity button click
-    $('.quantity-increase').click(function() {
-        updateQuantity($(this), 1); 
-    });
-
-    // Decrease quantity button click
-    $('.quantity-decrease').click(function() {
-        updateQuantity($(this), -1);
-    });
-
-    // Update quantity function
-    function updateQuantity(element, change) {
-        const cartId = element.closest('.quantity').find('.input-quantity').attr('id').split('_')[1];
-        const quantityInput = $('#quantityInput_' + cartId);
-        let currentValue = parseInt(quantityInput.val());
-        currentValue += change;
-        if (currentValue < 1) {
-            currentValue = 1; 
-        }
-        quantityInput.val(currentValue);
-        updateCartQuantity(cartId, currentValue);
-    }
-
-    // function to update cart quantity
-    function updateCartQuantity(cartId, quantity) {
-        $.ajax({
-            type: 'POST',
-            url: '<?= base_url('carts/updateQuantity') ?>',
-            data: {
-                cart_id: cartId,
-                quantity: quantity
-            },
-            dataType: 'json',
-            success: function(response) {
-                console.log('Quantity updated successfully');
-            },
-            error: function(xhr, status, error) {
-                console.error(error);
-            }
-        });
-    }
-
-    // Remove cart item function
-    $(document).on('click', '#removeCart', function(e) {
-        e.preventDefault();
-        const cartId = $(this).closest('.cart-item').find('.input-quantity').attr('id').split('_')[1];
-        const cartItem = $(this).closest('.cart-item'); 
-        $.ajax({
-            type: 'POST',
-            url: '<?= base_url('carts/removeCartItem') ?>',
-            data: {
-                cart_id: cartId
-            },
-            dataType: 'json',
-            success: function(response) {
-                cartItem.remove(); // Remove the cart item from UI
-                console.log('Item removed from cart');
-            },
-            error: function(xhr, status, error) {
-                console.error(error);
-            }
-        });
-    });
-});
-
-</script>

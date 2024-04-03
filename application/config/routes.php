@@ -5,6 +5,9 @@ $route['default_controller'] = 'catalogs';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
+//test
+$route['carts/getCartTotal'] = 'Catalogs/getCartTotal';
+
 
 $route['login'] = 'Users';
 //login process

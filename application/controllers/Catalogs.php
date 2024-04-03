@@ -15,7 +15,7 @@ class Catalogs extends CI_Controller
 		} else {
 			$data['products'] = $this->Product->getProductsWithMainImages();
 			$data['categories'] = $this->Category->getCategories();
-			
+
 			$this->prepareUserData();
 			$this->load->view('partials/header', $this->data);
 			$this->load->view('partials/menu', $this->data);
@@ -33,13 +33,14 @@ class Catalogs extends CI_Controller
 		$user_data = $this->User->getUserById($user_id);
 		$is_logged_in = $this->session->userdata('logged_in');
 		$user_role = $this->session->userdata('role');
+		$cartsTotal = $this->Cart->countCarts();
+
 
 		$this->data['user_data'] = $user_data;
 		$this->data['is_logged_in'] = $is_logged_in;
 		$this->data['role'] = $user_role;
+		$this->data['cartsTotal'] = $cartsTotal;
 	}
-
-
 
 
 	public function crsf()
@@ -95,6 +96,15 @@ class Catalogs extends CI_Controller
 		$this->load->view('catalog/view', $data);
 		$this->load->view('partials/footer');
 	}
+
+	public function getCartTotal()
+	{
+
+		$cartTotal = $this->Cart->countCarts(); 
+	
+		echo $cartTotal; 
+	}
+	
 
 
 

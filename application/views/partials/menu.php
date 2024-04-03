@@ -2,40 +2,40 @@
  	<div class="top-navbar">
  		<div class="container">
  			<div class="row">
- 				<div class="col-md-2 my-auto d-none d-sm-none d-md-block d-lg-block">
- 					<h5 class="brand-name"><a href="<?= base_url('catalogs') ?>" class="text-decoration-none text-dark text-muted">Market Place</a></h5>
-
- 				</div>
+			 <div class="col-md-2 my-auto d-flex align-items-center justify-content-center">
+				<h5 class="brand-name mb-0"><a href="<?= base_url('catalogs') ?>" class="text-decoration-none text-dark text-muted">VeggieCart</a></h5>
+				<img src="<?= base_url('assets/images/logo.png') ?>" alt="Logo" class="img-fluid" style="max-width: 60px;">
+			</div>
  				<div class="col-md-5 my-auto">
- 				
- 				</div>
-				
-				 <?php if (isset($user_role) && $user_role == 1) : ?>
-								<li class="nav-item">
-									<a class="nav-link text-dark" href="#">
-										<i class="bi bi-heart-fill"></i> Dashboard (0)
-									</a>
-								</li>
-				<?php else : ?>
-						
-				<?php endif; ?>
 
-				 <?php if (isset($is_logged_in) && $is_logged_in) : ?>
+ 				</div>
+
+ 				<!-- In devluponmetn -->
+ 				<?php if (isset($user_role) && $user_role == 1) : ?>
+ 					<li class="nav-item">
+ 						<a class="nav-link text-dark" href="#">
+ 							<i class="bi bi-heart-fill"></i> Dashboard (0)
+ 						</a>
+ 					</li>
+ 				<?php else : ?>
+
+ 				<?php endif; ?>
+
+ 				<?php if (isset($is_logged_in) && $is_logged_in) : ?>
  					<div class="col-md-5 my-auto">
  						<ul class="nav justify-content-end">
 
- 							<li class="nav-item">
- 								<a class="nav-link text-dark" href="<?= base_url('carts') ?>">
- 									<i class="bi bi-cart"></i>Cart (0)
+
+ 							<li class="nav-item position-relative">
+ 								<a class="nav-link text-dark" href="<?=base_url('carts') ?>">
+ 									<i class="bi bi-cart"></i> Carts
+									 <span id="cartTotal" class="position-absolute top-0 start-80 translate-middle badge rounded-pill bg-danger">
+							<?= $cartsTotal ?>
+							<span class="visually-hidden">unread messages</span>
+						</span>
+
  								</a>
  							</li>
- 							<li class="nav-item">
- 								<a class="nav-link text-dark" href="#">
- 									<i class="bi bi-heart-fill"></i> Wishlist (0)
- 								</a>
- 							</li>
-
-
 
 
  							<li class="nav-item dropdown">
@@ -59,12 +59,12 @@
 
  							<li class="nav-item">
  								<a class="nav-link text-dark" href="<?= base_url('login') ?>">
- 								Login
+ 									Login
  								</a>
  							</li>
  							<li class="nav-item">
- 								<a class="nav-link text-dark" href="<?=base_url('signup') ?>">
- 									 Register
+ 								<a class="nav-link text-dark" href="<?= base_url('signup') ?>">
+ 									Register
  								</a>
  							</li>
 

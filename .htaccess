@@ -1,6 +1,6 @@
 RewriteEngine on
 
-RewriteCond $1 !^(index\.php|assets|js|css|uploads|favicon.png)
+RewriteCond $1 !^(index\.php|assets|js|css|uploads|images|favicon.png)
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

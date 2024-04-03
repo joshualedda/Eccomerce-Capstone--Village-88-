@@ -99,27 +99,40 @@
 </div>
 <script>
 $(document).ready(function() {
-    $('.addToCartForm').submit(function(e) {
-        e.preventDefault(); 
-
-        var formData = new FormData($(this)[0]); 
-        $.ajax({
-            type: 'POST',
-            url: $(this).attr('action'),
-            data: formData,
-            processData: false, 
-            contentType: false, 
-            success: function(response) {
-                $("#message").html("Added To Cart.");
-                $("#liveToast").removeClass("hide");
-                $(".toast").toast("show");
-            },
-            error: function(xhr, status, error) {
-                console.error(error);
-                alert('Error adding product to cart. Please try again.');
-            }
-        });
+	$('.addToCartForm').submit(function(e) {
+    e.preventDefault();
+    var formData = new FormData($(this)[0]);
+    $.ajax({
+        type: 'POST',
+        url: $(this).attr('action'),
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            updateCartTotal();
+            $("#message").html("Added To Cart.");
+            $("#liveToast").removeClass("hide");
+            $(".toast").toast("show");
+        },
+        error: function(xhr, status, error) {
+            console.error(error);
+            alert('Error adding product to cart. Please try again.');
+        }
     });
+});
+
+function updateCartTotal() {
+            $.ajax({
+                type: 'GET',
+                url: '<?= base_url("carts/getCartTotal") ?>', 
+                success: function(cartTotal) {
+                    $('#cartTotal').text(cartTotal);
+                },
+                error: function(xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
 });
 
 </script>
