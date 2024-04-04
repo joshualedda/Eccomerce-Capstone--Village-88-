@@ -4,24 +4,52 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Categories extends CI_Controller
 {
 
-	public function index()
+	public function index()	
 	{
-		if ($this->input->is_ajax_request()) {
-		$name = $this->input->post('name');
-		$data['categories'] = $this->Category->filterCategories($name);
-		$this->load->view('components/categoriesTable', $data);
-	} else {
-		$data['categories'] = $this->Category->getCategories();
-		$this->load->view('partials/header');
-		$this->load->view('partials/navbar');
-		$this->load->view('partials/sidebar');
-		$this->load->view('admin/categories/index', $data);
-		$this->load->view('partials/footer');
-	}
-}
+		$this->prepareUserData();
+		$this->redirectIfUnauthorized();
 
+		if ($this->input->is_ajax_request()) {
+			$name = $this->input->post('name');
+			$data['categories'] = $this->Category->filterCategories($name);
+			$this->load->view('components/categoriesTable', $data);
+		} else {
+			$data['categories'] = $this->Category->getCategories();
+			$this->load->view('partials/header');
+			$this->load->view('partials/navbar');
+			$this->load->view('partials/sidebar');
+			$this->load->view('admin/categories/index', $data);
+			$this->load->view('partials/footer');
+		}
+	}
+
+	private function redirectIfUnauthorized()
+	{
+		if (!$this->data['is_logged_in'] || $this->data['role'] != 1) {
+			$previous_url = $_SERVER['HTTP_REFERER'];
+			redirect($previous_url);
+		}
+	}
+
+	private function prepareUserData()
+	{
+		$user_id = $this->session->userdata('id');
+		$user_data = $this->User->getUserById($user_id);
+		$is_logged_in = $this->session->userdata('logged_in');
+		$user_role = $this->session->userdata('role');
+		$cartsTotal = $this->Cart->countCarts();
+
+
+		$this->data['user_data'] = $user_data;
+		$this->data['is_logged_in'] = $is_logged_in;
+		$this->data['role'] = $user_role;
+		$this->data['cartsTotal'] = $cartsTotal;
+	}
 	public function create()
 	{
+		$this->prepareUserData();
+		$this->redirectIfUnauthorized();
+
 		$this->load->view('partials/header');
 		$this->load->view('partials/navbar');
 		$this->load->view('partials/sidebar');
@@ -54,6 +82,9 @@ class Categories extends CI_Controller
 
 	public function view($categoryId)
 	{
+		$this->prepareUserData();
+		$this->redirectIfUnauthorized();
+
 		$data['category'] = $this->Category->getCategory($categoryId);
 		$this->load->view('partials/header');
 		$this->load->view('partials/navbar');

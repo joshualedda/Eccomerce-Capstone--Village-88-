@@ -14,7 +14,7 @@
 		<!-- Other filters here -->
 
 		<div class="d-flex justify-content-end align-items-center my-2">
-			<div class="search-bar me-2 col-md-3">
+			<div class="search-bar me-2 col-md-4">
 
 				<form method="POST" action="<?= base_url('product/search') ?>" id="filterProduct" class="search-form d-flex align-items-center">
 				<input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">

@@ -70,3 +70,7 @@ $route['catalog/search'] = 'catalogs/index';
 
 //Carts
 $route['carts'] = 'carts';
+
+
+//User Orders
+$route['orders/track'] = 'orders/viewOrders';

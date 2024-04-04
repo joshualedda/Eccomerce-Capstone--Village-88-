@@ -7,6 +7,22 @@ class Order extends CI_Model
 		$this->load->database();
 	}
 
+	public function getOrders() 
+{
+    $sql = "SELECT orders.*, orders.id AS orderId, orders.created_at AS orderDate,
+            shippings.id AS shippingId, products.id AS productId, products.name AS productName,
+            CONCAT(shippings.first_name, ' ', shippings.last_name) AS shipperName,
+            CONCAT(shippings.city, ',', shippings.state, ',', shippings.zip) AS shipperAddress
+            FROM orders
+            LEFT JOIN shippings ON orders.shipping_id = shippings.id
+            LEFT JOIN products ON products.id = orders.product_id
+            ORDER BY orders.created_at DESC";
+
+    $query = $this->db->query($sql);
+    return $query->result_array();
+}
+
+
 	public function validateOrderForm()
 	{
 		$this->form_validation->set_rules('firstNameShipping', 'First Name (Shipping)', 'required');
@@ -33,7 +49,6 @@ class Order extends CI_Model
 			$this->form_validation->set_rules('stateBilling', 'State (Billing)', 'required');
 			$this->form_validation->set_rules('zipBilling', 'ZIP Code (Billing)', 'required');
 		}
-
 	}
 
 	public function addOrder()
@@ -71,11 +86,11 @@ class Order extends CI_Model
 				WHERE carts.user_id = ?";
 		$query = $this->db->query($sql, array($userId));
 		$cartItems = $query->result_array();
-		
+
 		if (empty($cartItems)) {
 			return array('success' => false, 'error' => 'Cart is empty.');
 		}
-	
+
 
 		if (!empty($checkbox)) {
 			$firstNameBilling = $firstNameShipping;
@@ -92,43 +107,165 @@ class Order extends CI_Model
 		foreach ($cartItems as $item) {
 			$productId = $item['product_id'];
 			$quantity = $item['quantity'];
-			$totalAmount = $item['price'] * $quantity; 
-		
+			$totalAmount = $item['price'] * $quantity;
+
 			$sqlShipping = "INSERT INTO shippings (first_name, last_name, main_address, secondary_address, city, state, zip) VALUES (?, ?, ?, ?, ?, ?, ?)";
 			$queryShipping = $this->db->query($sqlShipping, array($firstNameShipping, $lastNameShipping, $address1Shipping, $address2Shipping, $cityShipping, $stateShipping, $zipShipping));
-		
+
 			if (!$queryShipping) {
 				$insertSuccess = false;
 				break;
 			}
-		
-			$shipping_id = $this->db->insert_id(); 
-		
+
+			$shipping_id = $this->db->insert_id();
+
 			// Insert billing 
 			$sqlBilling = "INSERT INTO billings (first_name, last_name, main_address, secondary_address, city, state, zip) VALUES (?, ?, ?, ?, ?, ?, ?)";
 			$queryBilling = $this->db->query($sqlBilling, array($firstNameBilling, $lastNameBilling, $address1Billing, $address2Billing, $cityBilling, $stateBilling, $zipBilling));
-		
+
 			if (!$queryBilling) {
 				$insertSuccess = false;
-				break; 
+				break;
 			}
-		
-			$billing_id = $this->db->insert_id(); 
+
+			$billing_id = $this->db->insert_id();
 
 			// Insert order
 			$sqlOrder = "INSERT INTO orders (user_id, product_id, shipping_id, billing_id, 	total_amount) VALUES (?, ?, ?, ?, ?)";
 			$queryOrder = $this->db->query($sqlOrder, array($userId, $productId, $shipping_id, $billing_id, $totalAmount));
-		
+
 			if (!$queryOrder) {
 				$insertSuccess = false;
-				break; 
+				break;
 			}
 		}
-		
+
 		if ($insertSuccess) {
 			return array('success' => true);
 		} else {
 			return array('success' => false, 'error' => 'Error inserting shipping information, billing information, or order.');
+		}
+	}
+
+	// Track Orders
+	//0: Pending
+	public function pendingOrders()
+	{
+		$userId = $this->session->userdata('id');
+		$status = 0;
+
+		$sql = "SELECT orders.*, orders.id AS orderId, products.name AS productName, orders.created_at AS orderCreated
+				FROM orders
+				LEFT JOIN products ON products.id = orders.product_id
+				WHERE user_id = ? AND status = ?";
+
+		$result = $this->db->query($sql, array($userId, $status));
+
+		if ($result) {
+			$pendingOrders = $result->result_array();
+			return $pendingOrders;
+		} else {
+			return array();
+		}
+	}
+
+	public function processOrders()
+	{
+		$userId = $this->session->userdata('id');
+		$status = 1;
+
+		$sql = "SELECT orders.*, orders.id AS orderId, products.name AS productName, orders.created_at AS orderCreated
+				FROM orders
+				LEFT JOIN products ON products.id = orders.product_id
+				WHERE user_id = ? AND status = ?";
+
+		$result = $this->db->query($sql, array($userId, $status));
+
+		if ($result) {
+			$pendingOrders = $result->result_array();
+			return $pendingOrders;
+		} else {
+			return array();
+		}
+	}
+
+	public function shippedOrders()
+	{
+		$userId = $this->session->userdata('id');
+		$status = 2;
+
+		$sql = "SELECT orders.*, orders.id AS orderId, products.name AS productName, orders.created_at AS orderCreated
+				FROM orders
+				LEFT JOIN products ON products.id = orders.product_id
+				WHERE user_id = ? AND status = ?";
+
+		$result = $this->db->query($sql, array($userId, $status));
+
+		if ($result) {
+			$pendingOrders = $result->result_array();
+			return $pendingOrders;
+		} else {
+			return array();
+		}
+	}
+
+	public function deliveredOrders()
+	{
+		$userId = $this->session->userdata('id');
+		$status = 3;
+
+		$sql = "SELECT orders.*, orders.id AS orderId, products.name AS productName, orders.created_at AS orderCreated
+				FROM orders
+				LEFT JOIN products ON products.id = orders.product_id
+				WHERE user_id = ? AND status = ?";
+
+		$result = $this->db->query($sql, array($userId, $status));
+
+		if ($result) {
+			$pendingOrders = $result->result_array();
+			return $pendingOrders;
+		} else {
+			return array();
+		}
+	}
+
+	public function cancelledOrders()
+	{
+		$userId = $this->session->userdata('id');
+		$status = 4;
+
+		$sql = "SELECT orders.*, orders.id AS orderId, products.name AS productName, orders.created_at AS orderCreated
+				FROM orders
+				LEFT JOIN products ON products.id = orders.product_id
+				WHERE user_id = ? AND status = ?";
+
+		$result = $this->db->query($sql, array($userId, $status));
+
+		if ($result) {
+			$pendingOrders = $result->result_array();
+			return $pendingOrders;
+		} else {
+			return array();
+		}
+	}
+
+	public function refundOrders()
+	{
+		$userId = $this->session->userdata('id');
+		$status = 4;
+
+		$sql = "SELECT orders.*, orders.id AS orderId, products.name AS productName, orders.created_at AS orderCreated
+				FROM orders
+				LEFT JOIN products ON products.id = orders.product_id
+				WHERE user_id = ? AND status = ?";
+
+		$result = $this->db->query($sql, array($userId, $status));
+
+		if ($result) {
+			$pendingOrders = $result->result_array();
+			return $pendingOrders;
+		} else {
+			return array();
 		}
 	}
 }

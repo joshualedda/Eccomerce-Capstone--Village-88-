@@ -34,27 +34,43 @@ class Carts extends CI_Controller
 	//update carts
 	public function updateQuantity()
 	{
-		$cartId = $this->input->post('cart_id');
-		$quantity = $this->input->post('quantity');
-
-
-		$this->Cart->updateCartQuantity($cartId, $quantity);
-
-		echo json_encode(['success' => true]);
+		$result = $this->Cart->updateCartQuantity();
+		if ($result['success']) {
+			if ($this->input->is_ajax_request()) {
+				echo json_encode(array('success' => true, 'message' => 'Added Succefully'));
+			} else {
+				$this->session->set_flashdata('success_message', 'Added Successfully');
+				redirect('carts');
+			}
+		} else {
+			if ($this->input->is_ajax_request()) {
+				echo json_encode(array('success' => false, 'message' => $result['error']));
+			} else {
+				$data['error_message'] = $result['error'];
+				$this->index();
+			}
+		}
 	}
 
 	public function removeCartItem()
 	{
-		$cartId = $this->input->post('cart_id');
 
-		$this->db->where('id', $cartId);
-		$this->db->delete('carts');
+		$result = $this->Cart->removeCart();
 
-		// Check if the delete operation was successful
-		if ($this->db->affected_rows() > 0) {
-			echo json_encode(['success' => true]);
+		if ($result['success']) {
+			if ($this->input->is_ajax_request()) {
+				echo json_encode(array('success' => true, 'message' => 'Removed Successfully'));
+			} else {
+				$this->session->set_flashdata('success_message', 'Removed Successfully');
+				redirect('carts');
+			}
 		} else {
-			echo json_encode(['success' => false, 'error' => 'Error removing item from cart']);
+			if ($this->input->is_ajax_request()) {
+				echo json_encode(array('success' => false, 'message' => $result['error']));
+			} else {
+				$data['error_message'] = $result['error'];
+				$this->index();
+			}
 		}
 	}
 }

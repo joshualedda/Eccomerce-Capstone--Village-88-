@@ -59,13 +59,39 @@ class Cart extends CI_Model
 		return ($query) ? $query->row()->cartCount : 0;
 	}
 
-	public function updateCartQuantity($cartId, $quantity)
+	public function updateCartQuantity()
 	{
+		$cartId = $this->input->post('cart_id');
+		$quantity = $this->input->post('quantity');  
+
 		$sql = "UPDATE carts SET quantity = ? WHERE id = ?";
 		$this->db->query($sql, array($quantity, $cartId));
 	}
 
+	public function removeCart()
+	{
+		$cartId = $this->input->post('cart_id');
+	
+		if (empty($cartId)) {
+			return array('success' => false, 'error' => 'Cart ID is required.');
+		}
+	
+		$cartId = $this->db->escape_str($cartId);
+	
+		$sql = "DELETE FROM carts WHERE id = ?";
+		$query = $this->db->query($sql, array($cartId));
+	
+		if ($query) {
+			return array('success' => true);
+		} else {
+			return array('success' => false, 'error' => 'Error removing item from cart.');
+		}
+	}
 
-
-
+	public function addQuantity() 
+	{
+		$cartId = $this->input->post('cart_id');
+		$quantity = $this->input->post('quantity');  
+	}
+	
 }

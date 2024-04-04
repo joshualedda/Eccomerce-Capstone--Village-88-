@@ -23,7 +23,6 @@
 							</select>
 
 							<input type="text" name="name" class="form-control mx-2" placeholder="Search" title="Enter search keyword">
-
 						</div>
 					</div>
 				</div>

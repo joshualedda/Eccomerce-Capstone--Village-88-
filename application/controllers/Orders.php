@@ -8,12 +8,13 @@ class Orders extends CI_Controller
 	{
 		$this->prepareUserData();
 		$this->redirectIfUnauthorized();
+		$data['orders'] = $this->Order->getOrders();
 		
 		$data['title'] = 'Orders';
 		$this->load->view('partials/header', $data);
-		$this->load->view('partials/navbar', $data);
+		$this->load->view('partials/navbar', $this->data);
 		$this->load->view('partials/sidebar');
-		$this->load->view('admin/orders/index');
+		$this->load->view('admin/orders/index', $data);
 		$this->load->view('partials/footer');
 	}
 
@@ -23,10 +24,13 @@ class Orders extends CI_Controller
 		$user_data = $this->User->getUserById($user_id);
 		$is_logged_in = $this->session->userdata('logged_in');
 		$user_role = $this->session->userdata('role');
+		$cartsTotal = $this->Cart->countCarts();
+
 
 		$this->data['user_data'] = $user_data;
 		$this->data['is_logged_in'] = $is_logged_in;
 		$this->data['role'] = $user_role;
+		$this->data['cartsTotal'] = $cartsTotal;
 	}
 
 	private function redirectIfUnauthorized()
@@ -37,7 +41,6 @@ class Orders extends CI_Controller
 		}
 	}
 	
-
 	public function createOrder() 
 	{
 		$result = $this->Order->addOrder();
@@ -57,6 +60,25 @@ class Orders extends CI_Controller
 				redirect('carts');
 		}
 		}
+	}
+
+	public function viewOrders()
+	{
+		$this->prepareUserData();
+		$this->redirectIfUnauthorized();
+
+		$data['title'] = 'Track Order';
+		$data['pendings'] = $this->Order->pendingOrders();
+		$data['process'] = $this->Order->processOrders();
+		$data['shipped'] = $this->Order->shippedOrders();
+		$data['delivered'] = $this->Order->deliveredOrders();
+		$data['cancelled'] = $this->Order->cancelledOrders();
+		$data['refunds'] = $this->Order->refundOrders();
+
+		$this->load->view('partials/header', $data);
+		$this->load->view('partials/menu', $this->data);
+		$this->load->view('orders/index');
+		$this->load->view('partials/footer');
 	}
 
 

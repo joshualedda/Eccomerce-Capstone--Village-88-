@@ -25,11 +25,11 @@ class Product extends CI_Model
 				FROM products
 				LEFT JOIN images ON images.product_id = products.id AND images.main = 1
 				ORDER BY products.stocks DESC";
-	
+
 		$query = $this->db->query($sql);
 		return $query->result_array();
 	}
-	
+
 
 	public function getProductMainImage($productId)
 	{
@@ -98,7 +98,8 @@ class Product extends CI_Model
 		COALESCE(images.image, (SELECT image FROM images WHERE product_id = products.id LIMIT 1)) AS main_image_url
 		FROM products
 		LEFT JOIN images ON images.product_id = products.id AND images.main = 1
-		WHERE products.category_id = ?";
+		WHERE products.category_id = ?
+		ORDER BY products.stocks DESC";
 
 		$query = $this->db->query($sql, array($categoryId));
 		return $query->result_array();
@@ -115,48 +116,48 @@ class Product extends CI_Model
 
 	//insert product
 	public function addProduct()
-{
-    $this->form_validation->set_rules('product', 'Product', 'required');
-    $this->form_validation->set_rules('description', 'Description', 'required');
-    $this->form_validation->set_rules('category', 'Category', 'required');
-    $this->form_validation->set_rules('price', 'Price', 'required|numeric');
-    $this->form_validation->set_rules('stocks', 'Stocks', 'required|numeric');
+	{
+		$this->form_validation->set_rules('product', 'Product', 'required');
+		$this->form_validation->set_rules('description', 'Description', 'required');
+		$this->form_validation->set_rules('category', 'Category', 'required');
+		$this->form_validation->set_rules('price', 'Price', 'required|numeric');
+		$this->form_validation->set_rules('stocks', 'Stocks', 'required|numeric');
 
-    if ($this->form_validation->run() == false) {
-        return array('success' => false, 'error' => validation_errors());
-    }
+		if ($this->form_validation->run() == false) {
+			return array('success' => false, 'error' => validation_errors());
+		}
 
-    $product = $this->security->xss_clean($this->input->post('product'));
-    $description = $this->security->xss_clean($this->input->post('description'));
-    $category = $this->security->xss_clean($this->input->post('category'));
-    $price = $this->security->xss_clean($this->input->post('price'));
-    $stocks = $this->security->xss_clean($this->input->post('stocks'));
+		$product = $this->security->xss_clean($this->input->post('product'));
+		$description = $this->security->xss_clean($this->input->post('description'));
+		$category = $this->security->xss_clean($this->input->post('category'));
+		$price = $this->security->xss_clean($this->input->post('price'));
+		$stocks = $this->security->xss_clean($this->input->post('stocks'));
 
-    $sql = "SELECT * FROM products WHERE name = ? LIMIT 1";
-    $existing_product = $this->db->query($sql, array($product))->row();
+		$sql = "SELECT * FROM products WHERE name = ? LIMIT 1";
+		$existing_product = $this->db->query($sql, array($product))->row();
 
-    if ($existing_product) {
-        return array('success' => false, 'error' => 'Product with the same name already exists.');
-    }
+		if ($existing_product) {
+			return array('success' => false, 'error' => 'Product with the same name already exists.');
+		}
 
-    $sql = "INSERT INTO products (category_id, name, description, price, stocks) VALUES (?, ?, ?, ?, ?)";
-    $query = $this->db->query($sql, array($category, $product, $description, $price, $stocks));
+		$sql = "INSERT INTO products (category_id, name, description, price, stocks) VALUES (?, ?, ?, ?, ?)";
+		$query = $this->db->query($sql, array($category, $product, $description, $price, $stocks));
 
-    if ($query) {
-        $product_id = $this->db->insert_id();
+		if ($query) {
+			$product_id = $this->db->insert_id();
 
-        $uploaded_images = $this->uploadImages();
-        $main_images = $this->input->post('main_image');
-        foreach ($uploaded_images as $key => $image) {
-            $main_flag = isset($main_images[$key]) ? 1 : 0;
-            $this->db->insert('images', array('product_id' => $product_id, 'image' => $image, 'main' => $main_flag));
-        }
+			$uploaded_images = $this->uploadImages();
+			$main_images = $this->input->post('main_image');
+			foreach ($uploaded_images as $key => $image) {
+				$main_flag = isset($main_images[$key]) ? 1 : 0;
+				$this->db->insert('images', array('product_id' => $product_id, 'image' => $image, 'main' => $main_flag));
+			}
 
-        return array('success' => true);
-    } else {
-        return array('success' => false, 'error' => 'Error.');
-    }
-}
+			return array('success' => true);
+		} else {
+			return array('success' => false, 'error' => 'Error.');
+		}
+	}
 
 
 	public function checkImageLimit($productId)
@@ -223,7 +224,7 @@ class Product extends CI_Model
 
 		$sql = "UPDATE products SET category_id = ?, name = ?, description = ?, price = ?, stocks = ? 
 		WHERE id = ?";
- 
+
 		$query = $this->db->query($sql, array($category, $product, $description, $price, $stocks, $productId));
 
 		if ($query) {
@@ -258,21 +259,21 @@ class Product extends CI_Model
 				FROM products
 				LEFT JOIN images ON images.product_id = products.id
 				WHERE 1";
-	
+
 		$params = [];
-	
+
 		if (!empty($name)) {
 			$sql .= " AND (products.name LIKE ? OR products.description LIKE ?)";
 			$nameLike = "%$name%";
 			$params[] = $nameLike;  // Add to params array instead of overwriting
 			$params[] = $nameLike;  // Add again for the second parameter
 		}
-	
+
 		if (!empty($categoryId)) {
 			$sql .= " AND products.category_id = ?";
 			$params[] = $categoryId;
 		}
-	
+
 		// Apply price ordering based on user selection
 		if ($priceOrder == 'desc') {
 			$sql .= " ORDER BY products.price DESC";
@@ -281,12 +282,9 @@ class Product extends CI_Model
 		} else {
 			$sql .= " ORDER BY products.created_at DESC"; // Default order
 		}
-	
+
 		$query = $this->db->query($sql, $params);
-	
+
 		return $query->result_array();
 	}
-	
-
-
 }
