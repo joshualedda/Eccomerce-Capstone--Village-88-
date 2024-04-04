@@ -20,28 +20,13 @@
 				<span>Product</span>
 			</a>
 		</li>
-
 		<li class="nav-item">
-    <a class="nav-link d-flex justify-content-between align-items-center <?php echo ($this->uri->segment(1) == 'category' || $this->uri->segment(1) == 'brand') ? '' : 'collapsed'; ?>" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-        <span>
-            <i class="bi bi-list"></i>
-            <span>Other Components</span>
-        </span>
-        <i class="bi bi-chevron-down"></i>
-    </a>
-    <ul id="forms-nav" class="nav-content collapse <?php echo ($this->uri->segment(1) == 'category' || $this->uri->segment(1) == 'brand') ? 'show' : ''; ?>" data-bs-parent="#sidebar-nav">
-        <li class="py-2">
-            <a href="<?= base_url('category') ?>" class="text-decoration-none">
-                <i class="bi bi-circle"></i><span>Categories</span>
-            </a>
-        </li>
-        <li class="py-2">
-            <a href="<?= base_url('brand') ?>" class="text-decoration-none">
-                <i class="bi bi-circle"></i><span>Brand</span>
-            </a>
-        </li>
-    </ul>
-</li>
+			<a class="nav-link <?php echo ($this->uri->segment(1) == 'category') ? '' : 'collapsed'; ?>" href="<?= base_url('category') ?>">
+			<i class="bi bi-list"></i>
+				<span>Categories</span>
+			</a>
+		</li>
+
 
 
 

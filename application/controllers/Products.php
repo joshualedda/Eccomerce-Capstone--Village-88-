@@ -65,12 +65,22 @@ class Products extends CI_Controller
 		$result = $this->Product->addProduct();
 
 		if ($result['success']) {
-			$this->session->set_flashdata('success_message', 'Product Added Succesfully');
-			redirect('products/create');
+			if ($this->input->is_ajax_request()) {
+				echo json_encode(array('success' => true, 'message' => 'Product Created Succesfully'));
+			} else { 
+				$this->session->set_flashdata('success_message', 'Product Created Succesfully');
+				redirect('products/create');
+			}
 		} else {
-			$data['error_message'] = $result['error'];
-			$this->create();
+			if ($this->input->is_ajax_request()) {
+				echo json_encode(array('success' => false, 'message' => $result['error']));
+			} else { 
+				$data['error_message'] = $result['error'];
+				$this->create();
 		}
+	}
+
+
 	}
 
 	public function view($productId)

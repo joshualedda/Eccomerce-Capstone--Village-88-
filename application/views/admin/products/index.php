@@ -84,7 +84,7 @@
 			var formData = $('#filterProduct').serialize();
 			$.ajax({
 				type: 'POST',
-				url: '<?= base_url('product/search'); ?>',
+				url: $('#filterProduct').attr('action'), 
 				data: formData,
 				success: function(response) {
 					$('#productsTable tbody').html(response);

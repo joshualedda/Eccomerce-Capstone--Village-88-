@@ -11,7 +11,6 @@ class Catalogs extends CI_Controller
 			$priceOrder = $this->input->post('price_order');
 			$data['products'] = $this->Product->filterCatalog($name, $category, $priceOrder);
 			$this->load->view('components/catalogsPartial', $data);
-
 		} else {
 			$data['products'] = $this->Product->getProductsWithMainImages();
 			$data['categories'] = $this->Category->getCategories();
@@ -24,7 +23,6 @@ class Catalogs extends CI_Controller
 			$this->load->view('catalog/index', $data);
 			$this->load->view('partials/footer');
 		}
-
 	}
 
 	private function prepareUserData()
@@ -43,35 +41,39 @@ class Catalogs extends CI_Controller
 	}
 
 
-	public function crsf()
-	{
-		if ($this->input->post($this->security->get_csrf_token_name()) !== $this->security->get_csrf_hash()) {
-			$this->session->set_flashdata('error', 'Please login first.');
-		}
-	}
-
-
 	public function addToCart()
 	{
 		$user_id = $this->session->userdata('id');
 		if (!$user_id) {
-			$this->session->set_flashdata('error_message', 'You need to login first.');
-			redirect($_SERVER['HTTP_REFERER']);
+			if ($this->input->is_ajax_request()) {
+				echo json_encode(array('success' => false, 'message' => 'You need to login first.'));
+			} else {
+				$this->session->set_flashdata('error_message', 'You need to login first.');
+				redirect($_SERVER['HTTP_REFERER']);
+			}
 			return;
 		}
-		$this->crsf();
 
 		$result = $this->Catalog->createCart();
 
 		if ($result['success']) {
-			$this->session->set_flashdata('success_message', 'Added To Cart');
-			redirect($_SERVER['HTTP_REFERER']);
-
+			if ($this->input->is_ajax_request()) {
+				echo json_encode(array('success' => true, 'message' => 'Added To Cart'));
+			} else {
+				$this->session->set_flashdata('success_message', 'Added To Cart');
+				redirect($_SERVER['HTTP_REFERER']);
+			}
 		} else {
-			$this->session->set_flashdata('error_message', $result['error']);
-			redirect($_SERVER['HTTP_REFERER']);
+			if ($this->input->is_ajax_request()) {
+				echo json_encode(array('success' => false, 'message' => $result['error']));
+			} else {
+				$this->session->set_flashdata('error_message', $result['error']);
+				redirect($_SERVER['HTTP_REFERER']);
+			}
 		}
 	}
+
+
 
 	public function view($productId)
 	{
@@ -100,12 +102,8 @@ class Catalogs extends CI_Controller
 	public function getCartTotal()
 	{
 
-		$cartTotal = $this->Cart->countCarts(); 
-	
-		echo $cartTotal; 
+		$cartTotal = $this->Cart->countCarts();
+
+		echo $cartTotal;
 	}
-	
-
-
-
 }

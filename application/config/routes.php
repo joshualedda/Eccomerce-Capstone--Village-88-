@@ -50,6 +50,15 @@ $route['product/search'] = 'products/index';
 
 //Admin Categories
 $route['category'] = 'categories';
+//create category
+$route['category/create'] = 'categories/create';
+//store category
+$route['category/store'] = 'categories/store';
+
+
+
+//categories search
+$route['category/search'] = 'categories/index';
 
 
 //Product Catalog View

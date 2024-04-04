@@ -114,42 +114,49 @@ class Product extends CI_Model
 
 	//insert product
 	public function addProduct()
-	{
+{
+    $this->form_validation->set_rules('product', 'Product', 'required');
+    $this->form_validation->set_rules('description', 'Description', 'required');
+    $this->form_validation->set_rules('category', 'Category', 'required');
+    $this->form_validation->set_rules('price', 'Price', 'required|numeric');
+    $this->form_validation->set_rules('stocks', 'Stocks', 'required|numeric');
 
-		$this->form_validation->set_rules('product', 'Product', 'required');
-		$this->form_validation->set_rules('description', 'Description', 'required');
-		$this->form_validation->set_rules('category', 'Category', 'required');
-		$this->form_validation->set_rules('price', 'Price', 'required|numeric');
-		$this->form_validation->set_rules('stocks', 'Stocks', 'required|numeric');
+    if ($this->form_validation->run() == false) {
+        return array('success' => false, 'error' => validation_errors());
+    }
 
-		if ($this->form_validation->run() == false) {
-			return array('success' => false, 'error' => validation_errors());
-		}
+    $product = $this->security->xss_clean($this->input->post('product'));
+    $description = $this->security->xss_clean($this->input->post('description'));
+    $category = $this->security->xss_clean($this->input->post('category'));
+    $price = $this->security->xss_clean($this->input->post('price'));
+    $stocks = $this->security->xss_clean($this->input->post('stocks'));
 
-		$product = $this->security->xss_clean($this->input->post('product'));
-		$description = $this->security->xss_clean($this->input->post('description'));
-		$category = $this->security->xss_clean($this->input->post('category'));
-		$price = $this->security->xss_clean($this->input->post('price'));
-		$stocks = $this->security->xss_clean($this->input->post('stocks'));
+    $sql = "SELECT * FROM products WHERE name = ? LIMIT 1";
+    $existing_product = $this->db->query($sql, array($product))->row();
 
-		$sql = "INSERT INTO products (category_id, name, description, price, stocks) VALUES (?, ?, ?, ?, ?)";
-		$query = $this->db->query($sql, array($category, $product, $description, $price, $stocks));
+    if ($existing_product) {
+        return array('success' => false, 'error' => 'Product with the same name already exists.');
+    }
 
-		if ($query) {
-			$product_id = $this->db->insert_id();
+    $sql = "INSERT INTO products (category_id, name, description, price, stocks) VALUES (?, ?, ?, ?, ?)";
+    $query = $this->db->query($sql, array($category, $product, $description, $price, $stocks));
 
-			$uploaded_images = $this->uploadImages();
-			$main_images = $this->input->post('main_image');
-			foreach ($uploaded_images as $key => $image) {
-				$main_flag = isset($main_images[$key]) ? 1 : 0;
-				$this->db->insert('images', array('product_id' => $product_id, 'image' => $image, 'main' => $main_flag));
-			}
+    if ($query) {
+        $product_id = $this->db->insert_id();
 
-			return array('success' => true);
-		} else {
-			return array('success' => false, 'error' => 'Error.');
-		}
-	}
+        $uploaded_images = $this->uploadImages();
+        $main_images = $this->input->post('main_image');
+        foreach ($uploaded_images as $key => $image) {
+            $main_flag = isset($main_images[$key]) ? 1 : 0;
+            $this->db->insert('images', array('product_id' => $product_id, 'image' => $image, 'main' => $main_flag));
+        }
+
+        return array('success' => true);
+    } else {
+        return array('success' => false, 'error' => 'Error.');
+    }
+}
+
 
 	public function checkImageLimit($productId)
 	{
@@ -215,7 +222,7 @@ class Product extends CI_Model
 
 		$sql = "UPDATE products SET category_id = ?, name = ?, description = ?, price = ?, stocks = ? 
 		WHERE id = ?";
-
+ 
 		$query = $this->db->query($sql, array($category, $product, $description, $price, $stocks, $productId));
 
 		if ($query) {

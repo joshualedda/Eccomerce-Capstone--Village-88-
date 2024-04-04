@@ -7,9 +7,9 @@ class Profile extends CI_Controller
 	public function index()
 	{
 		$data['title'] = 'Profile';
-		$this->prepareUserData();
 		$this->redirectIfUnauthorized();
-
+		
+		$this->prepareUserData();
 		$data['carts'] = $this->Cart->getCarts();
 
 		$this->load->view('partials/header', $data);
@@ -17,7 +17,7 @@ class Profile extends CI_Controller
 		$this->load->view('partials/sidebar');
 		$this->load->view('partials/alert');
 		$this->load->view('partials/toast');
-		$this->load->view('profile/index');
+		$this->load->view('profile/index', $this->data);
 		$this->load->view('partials/footer');
 	}
 

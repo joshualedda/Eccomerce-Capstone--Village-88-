@@ -21,10 +21,10 @@
 					<h5 class="card-title">Product Information</h5>
 
 					<form id="createProduct" class="row g-3" action="<?= base_url('products/store') ?>" method="POST" enctype="multipart/form-data">
-					
-				<input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
-					
-					<div class="col-md-12">
+
+						<input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
+
+						<div class="col-md-12">
 							<label class="form-label">Product Name</label>
 							<input type="text" class="form-control" id="product" name="product">
 							<?= form_error('product', '<span  class="error text-sm text-danger">', '</span>'); ?>
@@ -75,8 +75,6 @@
 							<span id="imageValidate" class="text-sm text-danger"></span>
 							<div id="imagePreview" class="mt-2"></div>
 						</div>
-
-
 
 
 						<div class="text-end">

@@ -56,8 +56,8 @@
 										</div>
 									</div>
 									<div class="col-md-2 my-auto">
-									Total: $<span id="totalAmount_<?= $cart['cartId'] ?>" class="price text-dark" data-price="<?= $cart['totalPrice'] ?>"><?= $cart['totalPrice'] ?></span>
-									</div>
+            Total: $<span id="totalAmount_<?= $cart['cartId'] ?>" class="price text-dark" data-price="<?= $cart['totalPrice'] ?>" data-cartid="<?= $cart['cartId'] ?>"><?= $cart['totalPrice'] ?></span>
+        </div>
 									<div class="col-md-2 col-5 my-auto">
 										<div class="remove">
 											<a href="#" id="removeCart" class="btn btn-danger btn-sm">
