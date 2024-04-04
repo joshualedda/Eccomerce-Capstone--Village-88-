@@ -41,19 +41,19 @@ $(document).ready(function() {
     }
 
 	function updateTotalAmount(cartId, quantity) {
-		const pricePerUnit = parseFloat($('#totalAmount_' + cartId).data('price'));
+		const totalElement = $('#totalAmount_' + cartId);
+		const pricePerUnit = parseFloat(totalElement.data('price'));
 	
 		if (!isNaN(pricePerUnit)) {
-			const newTotal = (pricePerUnit * quantity).toFixed(2).replace(/\.?0+$/, '');
+			const newTotal = (pricePerUnit * quantity).toFixed(2); 
 	
-			$('#totalAmount_' + cartId).text('$' + newTotal);  // Include '$' in the displayed amount
+			totalElement.text('$' + newTotal); //
 		} else {
 			console.error('Invalid price per unit:', pricePerUnit);
 		}
 	}
 	
 
-	
 
     // Remove cart item function
     $(document).on('click', '#removeCart', function(e) {

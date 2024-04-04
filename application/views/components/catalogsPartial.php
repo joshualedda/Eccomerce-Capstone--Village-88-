@@ -1,5 +1,12 @@
 
-<?php foreach ($products as $product) : ?>
+<?php if (empty($products)) : ?>
+	<div class="col-md-12 text-center">
+	<p>No Product Available</p>
+</div>
+	<?php else : ?>
+
+
+				<?php foreach ($products as $product) : ?>
 							<div class="col-md-3">
 								<div class="product-card">
 									<div class="product-card-img">
@@ -38,3 +45,4 @@
 							</div>
 						<?php endforeach; ?>
 
+	<?php endif; ?>

@@ -7,10 +7,11 @@ class Carts extends CI_Controller
 	{
 		$data['carts'] = $this->Cart->getCarts();
 		$this->prepareUserData();
-
+		$data['totalCartAmount'] = $this->Cart->getTotalCartAmount();
 		$data['title'] = 'Carts';
 		$this->load->view('partials/header', $data);
 		$this->load->view('partials/menu', $this->data);
+		$this->load->view('partials/alert');
 		$this->load->view('cart/index', $data);
 		$this->load->view('partials/footer');
 	}
@@ -37,24 +38,23 @@ class Carts extends CI_Controller
 		$quantity = $this->input->post('quantity');
 
 
-$this->Cart->updateCartQuantity($cartId, $quantity);
+		$this->Cart->updateCartQuantity($cartId, $quantity);
 
 		echo json_encode(['success' => true]);
 	}
 
-		public function removeCartItem()
-		{
-			$cartId = $this->input->post('cart_id');
+	public function removeCartItem()
+	{
+		$cartId = $this->input->post('cart_id');
 
-			$this->db->where('id', $cartId);
-			$this->db->delete('carts');
+		$this->db->where('id', $cartId);
+		$this->db->delete('carts');
 
-			// Check if the delete operation was successful
-			if ($this->db->affected_rows() > 0) {
-				echo json_encode(['success' => true]);
-			} else {
-				echo json_encode(['success' => false, 'error' => 'Error removing item from cart']);
-			}
+		// Check if the delete operation was successful
+		if ($this->db->affected_rows() > 0) {
+			echo json_encode(['success' => true]);
+		} else {
+			echo json_encode(['success' => false, 'error' => 'Error removing item from cart']);
 		}
-
+	}
 }

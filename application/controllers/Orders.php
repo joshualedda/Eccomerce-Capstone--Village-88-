@@ -38,5 +38,42 @@ class Orders extends CI_Controller
 	}
 	
 
+	public function createOrder() 
+	{
+		$result = $this->Order->addOrder();
 
+		if ($result['success']) {
+			if ($this->input->is_ajax_request()) {
+				echo json_encode(array('success' => true, 'message' => 'Orders Successfully Created'));
+			} else { 
+				$this->session->set_flashdata('success_message', 'Orders Successfully Created');
+				redirect('carts');
+			}
+		} else {
+			if ($this->input->is_ajax_request()) {
+				echo json_encode(array('success' => false, 'message' => $result['error']));
+			} else { 
+				$data['error_message'] = $result['error'];
+				redirect('carts');
+		}
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
 }

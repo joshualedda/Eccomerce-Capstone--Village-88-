@@ -23,12 +23,13 @@ class Product extends CI_Model
 		$sql = "SELECT products.id AS productId, products.name, products.description, products.price, products.stocks, 
 						   COALESCE(images.image, (SELECT image FROM images WHERE product_id = products.id LIMIT 1)) AS main_image_url
 				FROM products
-				LEFT JOIN images ON images.product_id = products.id AND images.main = 1";
-
+				LEFT JOIN images ON images.product_id = products.id AND images.main = 1
+				ORDER BY products.stocks DESC";
+	
 		$query = $this->db->query($sql);
 		return $query->result_array();
 	}
-
+	
 
 	public function getProductMainImage($productId)
 	{

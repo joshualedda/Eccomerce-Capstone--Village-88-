@@ -29,6 +29,24 @@ class Cart extends CI_Model
 		return $query->result_array();
 	}
 
+	// Total Amount
+	public function getTotalCartAmount()
+	{
+    $userId = $this->session->userdata('id');
+    $sql = "SELECT 
+                SUM(products.price * carts.quantity) AS totalCartAmount
+            FROM carts
+            LEFT JOIN products ON carts.product_id = products.id
+            WHERE carts.user_id = ?";
+
+    $query = $this->db->query($sql, array($userId));
+    $row = $query->row_array();
+
+    return $row['totalCartAmount'];
+	}
+
+
+
 	public function countCarts()
 	{
 		$userId = $this->session->userdata('id');
