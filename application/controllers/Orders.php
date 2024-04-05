@@ -14,6 +14,7 @@ class Orders extends CI_Controller
 		$this->load->view('partials/header', $data);
 		$this->load->view('partials/navbar', $this->data);
 		$this->load->view('partials/sidebar');
+		$this->load->view('partials/toast');
 		$this->load->view('admin/orders/index', $data);
 		$this->load->view('partials/footer');
 	}
@@ -81,8 +82,18 @@ class Orders extends CI_Controller
 		$this->load->view('partials/footer');
 	}
 
-
-
+	public function updateStatus()
+	{
+		$result = $this->Order->updateOrderStatus();
+		
+		if ($result) {
+			echo json_encode(array('success' => true, 'message' => 'Status Updated Successfully'));
+		} else {
+			echo json_encode(array('success' => false, 'message' => 'Error updating status'));
+		}
+	}
+	
+	
 
 
 

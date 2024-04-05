@@ -38,8 +38,6 @@ class Users extends CI_Controller
 
 			$user_data = array(
 				'id' => $user['id'],
-				'email' => $user['email'],
-				'role' => $user['role'],
 				'logged_in' => true
 			);
 

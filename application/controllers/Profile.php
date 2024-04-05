@@ -7,17 +7,17 @@ class Profile extends CI_Controller
 	public function index()
 	{
 		$data['title'] = 'Profile';
-		$this->redirectIfUnauthorized();
-		
 		$this->prepareUserData();
+		$this->redirectIfUnauthorized();
+
 		$data['carts'] = $this->Cart->getCarts();
 
 		$this->load->view('partials/header', $data);
-		$this->load->view('partials/navbar', $data);
+		$this->load->view('partials/navbar', $this->data);
 		$this->load->view('partials/sidebar');
 		$this->load->view('partials/alert');
 		$this->load->view('partials/toast');
-		$this->load->view('profile/index', $this->data);
+		$this->load->view('admin/profile/index', $data);
 		$this->load->view('partials/footer');
 	}
 
@@ -29,6 +29,7 @@ class Profile extends CI_Controller
 			redirect($previous_url);
 		}
 	}
+	
 	private function prepareUserData()
 	{
 		$user_id = $this->session->userdata('id');
@@ -46,6 +47,7 @@ class Profile extends CI_Controller
 	public function userProfile()
 	{
 		$data = $this->prepareUserData();
+		$data = $this->redirectIfUnauthorized();
 
 		$this->load->view('partials/header');
 		$this->load->view('partials/alert');

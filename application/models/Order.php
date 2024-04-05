@@ -7,9 +7,9 @@ class Order extends CI_Model
 		$this->load->database();
 	}
 
-	public function getOrders() 
-{
-    $sql = "SELECT orders.*, orders.id AS orderId, orders.created_at AS orderDate,
+	public function getOrders()
+	{
+		$sql = "SELECT orders.*, orders.id AS orderId, orders.created_at AS orderDate, orders.total_amount AS totalAmount, orders.total_item AS orderQuantity,
             shippings.id AS shippingId, products.id AS productId, products.name AS productName,
             CONCAT(shippings.first_name, ' ', shippings.last_name) AS shipperName,
             CONCAT(shippings.city, ',', shippings.state, ',', shippings.zip) AS shipperAddress
@@ -18,9 +18,9 @@ class Order extends CI_Model
             LEFT JOIN products ON products.id = orders.product_id
             ORDER BY orders.created_at DESC";
 
-    $query = $this->db->query($sql);
-    return $query->result_array();
-}
+		$query = $this->db->query($sql);
+		return $query->result_array();
+	}
 
 
 	public function validateOrderForm()
@@ -131,8 +131,8 @@ class Order extends CI_Model
 			$billing_id = $this->db->insert_id();
 
 			// Insert order
-			$sqlOrder = "INSERT INTO orders (user_id, product_id, shipping_id, billing_id, 	total_amount) VALUES (?, ?, ?, ?, ?)";
-			$queryOrder = $this->db->query($sqlOrder, array($userId, $productId, $shipping_id, $billing_id, $totalAmount));
+			$sqlOrder = "INSERT INTO orders (user_id, product_id, shipping_id, billing_id, total_item, 	total_amount) VALUES (?, ?, ?, ?, ?, ?)";
+			$queryOrder = $this->db->query($sqlOrder, array($userId, $productId, $shipping_id, $billing_id, $quantity, $totalAmount));
 
 			if (!$queryOrder) {
 				$insertSuccess = false;
@@ -252,7 +252,7 @@ class Order extends CI_Model
 	public function refundOrders()
 	{
 		$userId = $this->session->userdata('id');
-		$status = 4;
+		$status = 5;
 
 		$sql = "SELECT orders.*, orders.id AS orderId, products.name AS productName, orders.created_at AS orderCreated
 				FROM orders
@@ -268,4 +268,21 @@ class Order extends CI_Model
 			return array();
 		}
 	}
+
+
+	public function updateOrderStatus()
+	{
+		$orderId = $this->input->post('orderId');
+		$newStatus = $this->input->post('newStatus');
+	
+		$sql = "UPDATE orders SET status = ? WHERE id = ?";
+		$this->db->query($sql, array($newStatus, $orderId));
+	
+		if ($this->db->affected_rows() > 0) {
+			return true;
+		} else {
+			return false; 
+		}
+	}
+	
 }
