@@ -15,20 +15,21 @@
 		<div class="d-flex justify-content-end align-items-center my-2">
 			<div class="search-bar me-2 col-md-4">
 
-				<form method="POST" action="<?= base_url('product/search') ?>" id="filterProduct" class="search-form d-flex align-items-center">
+				<form method="POST" action="<?= base_url('orders/search') ?>" id="filterOrders" class="search-form d-flex align-items-center">
 					<input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
 
-					<select id="category" class="form-select " name="category">
-						<option selected value="">Choose Below</option>
-						<?php foreach ($categories as $category) : ?>
-							<option value="<?= $category['id']; ?>"><?= $category['category']; ?></option>
-						<?php endforeach; ?>
+					<select id="status" class="form-select " name="status">
+					<option selected value="">Choose Below</option>
+					<option value="0">Pending</option>
+					<option value="1">In Process</option>
+					<option value="2">Shipped</option>
+					<option value="3">Delivered</option>
+					<option value="4">Cancelled</option>
+					<option value="5">Refund</option>
 					</select>
 
 					<input type="text" name="name" class="form-control mx-2" placeholder="Search" title="Enter search keyword">
 				</form>
-
-
 
 			</div>
 		</div>
@@ -39,7 +40,7 @@
 				<h5 class="card-title">Orders Data</h5>
 				<div class="table-responsive">
 
-					<table class="table">
+					<table class="table" id="ordersTable">
 						<thead>
 							<tr>
 								<th scope="col">Product Name</th>
@@ -95,3 +96,24 @@
 			</div>
 		</div>
 </main>
+
+
+<script>
+	$(document).ready(function() {
+		$('#filterOrders input[name="name"], #filterOrders select[name="status"]').on('input change', function() {
+			var formData = $('#filterOrders').serialize();
+			$.ajax({
+				type: 'POST',
+				url: $('#filterOrders').attr('action'), 
+				data: formData,
+				success: function(response) {
+					$('#ordersTable tbody').html(response);
+				},
+				error: function(xhr, status, error) {
+					console.log(error);
+				}
+			});
+		});
+	});
+</script>
+

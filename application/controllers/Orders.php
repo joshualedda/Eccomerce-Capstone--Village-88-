@@ -8,15 +8,24 @@ class Orders extends CI_Controller
 	{
 		$this->prepareUserData();
 		$this->redirectIfUnauthorized();
-		$data['orders'] = $this->Order->getOrders();
-		
 		$data['title'] = 'Orders';
-		$this->load->view('partials/header', $data);
-		$this->load->view('partials/navbar', $this->data);
-		$this->load->view('partials/sidebar');
-		$this->load->view('partials/toast');
-		$this->load->view('admin/orders/index', $data);
-		$this->load->view('partials/footer');
+
+		if ($this->input->is_ajax_request()) {
+			$name = $this->input->post('name');
+			$status = $this->input->post('status');
+
+			$data['orders'] = $this->Order->getFilteredOrders($name, $status);
+			$this->load->view('components/ordersTable', $data);
+		} else {
+
+			$data['orders'] = $this->Order->getOrders();
+			$this->load->view('partials/header', $data);
+			$this->load->view('partials/navbar', $this->data);
+			$this->load->view('partials/sidebar');
+			$this->load->view('partials/toast');
+			$this->load->view('admin/orders/index', $data);
+			$this->load->view('partials/footer');
+		}
 	}
 
 	private function prepareUserData()
@@ -41,25 +50,25 @@ class Orders extends CI_Controller
 			redirect($previous_url);
 		}
 	}
-	
-	public function createOrder() 
+
+	public function createOrder()
 	{
 		$result = $this->Order->addOrder();
 
 		if ($result['success']) {
 			if ($this->input->is_ajax_request()) {
 				echo json_encode(array('success' => true, 'message' => 'Orders Successfully Created'));
-			} else { 
+			} else {
 				$this->session->set_flashdata('success_message', 'Orders Successfully Created');
 				redirect('carts');
 			}
 		} else {
 			if ($this->input->is_ajax_request()) {
 				echo json_encode(array('success' => false, 'message' => $result['error']));
-			} else { 
+			} else {
 				$data['error_message'] = $result['error'];
 				redirect('carts');
-		}
+			}
 		}
 	}
 
@@ -85,28 +94,11 @@ class Orders extends CI_Controller
 	public function updateStatus()
 	{
 		$result = $this->Order->updateOrderStatus();
-		
+
 		if ($result) {
 			echo json_encode(array('success' => true, 'message' => 'Status Updated Successfully'));
 		} else {
 			echo json_encode(array('success' => false, 'message' => 'Error updating status'));
 		}
 	}
-	
-	
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	
 }

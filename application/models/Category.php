@@ -24,6 +24,16 @@ class Category extends CI_Model
 		return $query->row_array();
 	}
 
+	public function getCategoriesPaginated($limit, $offset) {
+        $this->db->limit($limit, $offset);
+        $query = $this->db->get('categories');
+        return $query->result_array();
+    }
+
+    public function countCategories() {
+        return $this->db->count_all('categories');
+    }
+
 	public function createCategory()
 	{
 		$this->form_validation->set_rules('category', 'Category', 'required');

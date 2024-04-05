@@ -50,8 +50,8 @@ class Profile extends CI_Controller
 		$data = $this->redirectIfUnauthorized();
 
 		$this->load->view('partials/header');
-		$this->load->view('partials/alert');
 		$this->load->view('partials/menu', $this->data); 
+		$this->load->view('partials/alert');
 		$this->load->view('partials/toast');
 		$this->load->view('profile/index', $data);
 		$this->load->view('partials/footer');
@@ -60,15 +60,16 @@ class Profile extends CI_Controller
 	public function updateProfile()
 	{
 		$result = $this->User->updateProfile();
-
+	
 		if ($result['success']) {
-			$this->session->set_flashdata('success_message', 'Profile Updated Succesfully');
-			redirect('profile');
+			$this->session->set_flashdata('success_message', 'Profile Updated Successfully');
 		} else {
-			$data['error_message'] = $result['error'];
-			$this->index();
+			$this->session->set_flashdata('error_message', $result['error']);
 		}
+	
+		redirect($_SERVER['HTTP_REFERER']);
 	}
+	
 
 	public function updatePassword()
 	{

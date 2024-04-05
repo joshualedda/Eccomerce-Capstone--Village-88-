@@ -74,3 +74,6 @@ $route['carts'] = 'carts';
 
 //User Orders
 $route['orders/track'] = 'orders/viewOrders';
+//order search --Admin Area
+$route['orders/search'] = 'orders/index';
+

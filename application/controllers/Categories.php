@@ -4,17 +4,34 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Categories extends CI_Controller
 {
 
-	public function index()	
+	public function index()   
 	{
 		$this->prepareUserData();
 		$this->redirectIfUnauthorized();
-
+	
+		$recordsPerPage = 5;
+	
+		$currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
+	
+		$offset = ($currentPage - 1) * $recordsPerPage;
+	
 		if ($this->input->is_ajax_request()) {
 			$name = $this->input->post('name');
 			$data['categories'] = $this->Category->filterCategories($name);
 			$this->load->view('components/categoriesTable', $data);
 		} else {
-			$data['categories'] = $this->Category->getCategories();
+				$data['categories'] = $this->Category->getCategoriesPaginated($recordsPerPage, $offset);
+		
+				$totalCategories = $this->Category->countCategories();
+	
+			$totalPages = ceil($totalCategories / $recordsPerPage);
+	
+			$data['pagination'] = [
+				'currentPage' => $currentPage,
+				'totalPages' => $totalPages
+			];
+	
+			// Load the view with pagination
 			$this->load->view('partials/header');
 			$this->load->view('partials/navbar');
 			$this->load->view('partials/sidebar');
@@ -22,6 +39,7 @@ class Categories extends CI_Controller
 			$this->load->view('partials/footer');
 		}
 	}
+	
 
 	private function redirectIfUnauthorized()
 	{

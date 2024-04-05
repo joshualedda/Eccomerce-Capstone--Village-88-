@@ -274,15 +274,47 @@ class Order extends CI_Model
 	{
 		$orderId = $this->input->post('orderId');
 		$newStatus = $this->input->post('newStatus');
-	
+
 		$sql = "UPDATE orders SET status = ? WHERE id = ?";
 		$this->db->query($sql, array($newStatus, $orderId));
-	
+
 		if ($this->db->affected_rows() > 0) {
 			return true;
 		} else {
-			return false; 
+			return false;
 		}
 	}
+
+	//get filtered status
+	public function getFilteredOrders($name, $status)
+{
+    $sql = "SELECT orders.*, orders.id AS orderId, orders.created_at AS orderDate, orders.total_amount AS totalAmount, orders.total_item AS orderQuantity,
+            shippings.id AS shippingId, products.id AS productId, products.name AS productName,
+            CONCAT(shippings.first_name, ' ', shippings.last_name) AS shipperName,
+            CONCAT(shippings.city, ',', shippings.state, ',', shippings.zip) AS shipperAddress
+            FROM orders
+            LEFT JOIN shippings ON orders.shipping_id = shippings.id
+            LEFT JOIN products ON products.id = orders.product_id
+            WHERE 1=1";
+
+    $params = [];
+
+    if (!empty($name)) {
+        $sql .= " AND (products.name LIKE ? OR CONCAT(shippings.first_name, ' ', shippings.last_name) LIKE ?)";
+        $nameLike = "%$name%";
+        $params[] = $nameLike;
+        $params[] = $nameLike;
+    }
+
+    if (!empty($status) || $status === '0') {
+        $sql .= " AND orders.status = ?";
+        $params[] = $status;
+    }
+
+    $query = $this->db->query($sql, $params);
+
+    return $query->result_array();
+}
+
 	
 }
