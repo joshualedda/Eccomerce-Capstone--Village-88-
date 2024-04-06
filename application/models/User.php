@@ -22,6 +22,8 @@ class User extends CI_Model
 
 		return null;
 	}
+
+
 	public function loginUser()
 	{
 		$this->form_validation->set_rules('email', 'Email', 'required|valid_email');
@@ -41,7 +43,6 @@ class User extends CI_Model
 			$user = $query->row_array();
 			$hashed_password = $user['password'];
 
-			// Compare the hashed password
 			if (password_verify($password, $hashed_password)) {
 				return array('success' => true, 'user' => $user);
 			}
@@ -139,5 +140,18 @@ class User extends CI_Model
 		}
 	}
 	
+	public function getUserName()
+	{
+		$user_id = $this->session->userdata('id');
+		$sql = "SELECT CONCAT(first_name, ' ', last_name) AS name FROM users WHERE id = ?";
+
+		$query = $this->db->query($sql, array($user_id));
+
+		if ($query->num_rows() == 1) {
+			return $query->row_array();
+		}
+
+		return null;
+	}
 	
 }

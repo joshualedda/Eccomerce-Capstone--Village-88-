@@ -22,6 +22,28 @@ class Order extends CI_Model
 		return $query->result_array();
 	}
 
+	public function getOrdersPaginated($recordsPerPage, $offset) {
+		$sql = "SELECT orders.*, orders.id AS orderId, orders.created_at AS orderDate, orders.total_amount AS totalAmount, orders.total_item AS orderQuantity,
+				shippings.id AS shippingId, products.id AS productId, products.name AS productName,
+				CONCAT(shippings.first_name, ' ', shippings.last_name) AS shipperName,
+				CONCAT(shippings.city, ',', shippings.state, ',', shippings.zip) AS shipperAddress
+				FROM orders
+				LEFT JOIN shippings ON orders.shipping_id = shippings.id
+				LEFT JOIN products ON products.id = orders.product_id
+				ORDER BY orders.created_at DESC
+				LIMIT ?, ?";
+		$query = $this->db->query($sql, array($offset, $recordsPerPage));
+		return $query->result_array();
+	}
+	
+	//pagination count
+	public function countOrders() {
+		$sql = "SELECT COUNT(*) AS total_orders FROM orders";
+		$query = $this->db->query($sql);
+		$result = $query->row_array();
+		return $result['total_orders'];
+	}
+
 
 	public function validateOrderForm()
 	{
@@ -214,10 +236,10 @@ class Order extends CI_Model
 		$userId = $this->session->userdata('id');
 		$status = 3;
 
-		$sql = "SELECT orders.*, orders.id AS orderId, products.name AS productName, orders.created_at AS orderCreated
-				FROM orders
-				LEFT JOIN products ON products.id = orders.product_id
-				WHERE user_id = ? AND status = ?";
+		$sql = "SELECT orders.*, orders.id AS orderId, products.name AS productName, orders.product_id AS productId, orders.created_at AS orderCreated
+		FROM orders
+		LEFT JOIN products ON products.id = orders.product_id
+		WHERE user_id = ? AND status = ?";
 
 		$result = $this->db->query($sql, array($userId, $status));
 

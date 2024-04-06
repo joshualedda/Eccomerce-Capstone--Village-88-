@@ -88,6 +88,7 @@ class Cart extends CI_Model
 		}
 	}
 
+	//test
 	public function addQuantity() 
 	{
 		$cartId = $this->input->post('cart_id');

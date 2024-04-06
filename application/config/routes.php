@@ -10,8 +10,7 @@ $route['carts/getCartTotal'] = 'Catalogs/getCartTotal';
 
 
 $route['login'] = 'Users';
-//login process
-$route['login/process'] = 'Users/login';
+
 
 
 //logout
@@ -54,7 +53,9 @@ $route['category'] = 'categories';
 $route['category/create'] = 'categories/create';
 //store category
 $route['category/store'] = 'categories/store';
-
+//categories pagination
+$route['categories/(:num)'] = 'categories/index';
+$route['categories/pagination'] = 'categories/pagination';
 
 
 //categories search
@@ -77,3 +78,5 @@ $route['orders/track'] = 'orders/viewOrders';
 //order search --Admin Area
 $route['orders/search'] = 'orders/index';
 
+//ratings
+$route['rate/product/(:num)'] = 'Ratings/index/$1';

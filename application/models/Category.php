@@ -2,7 +2,6 @@
 
 class Category extends CI_Model
 {
-	public $users = "users";
 
 	public function __construct()
 	{
@@ -24,15 +23,20 @@ class Category extends CI_Model
 		return $query->row_array();
 	}
 
-	public function getCategoriesPaginated($limit, $offset) {
-        $this->db->limit($limit, $offset);
-        $query = $this->db->get('categories');
-        return $query->result_array();
-    }
+	public function getCategoriesPaginated($limit, $offset)
+	{
+		$sql = "SELECT * FROM categories LIMIT ?, ?";
+		$query = $this->db->query($sql, array($offset, $limit));
+		return $query->result_array();
+	}
 
-    public function countCategories() {
-        return $this->db->count_all('categories');
-    }
+	public function countCategories()
+	{
+		$sql = "SELECT COUNT(*) AS total_categories FROM categories";
+		$query = $this->db->query($sql);
+		$result = $query->row_array();
+		return $result['total_categories'];
+	}
 
 	public function createCategory()
 	{
@@ -62,7 +66,6 @@ class Category extends CI_Model
 			}
 		}
 	}
-
 
 	// Update Category
 	public function updateCategory($categoryId)
@@ -95,7 +98,7 @@ class Category extends CI_Model
 	}
 
 	//Search Category
-	public function filterCategories($name)
+	public function filterCategories($name, $recordsPerPage, $offset)
 	{
 		$sql = "SELECT * FROM categories WHERE 1";
 
@@ -106,6 +109,10 @@ class Category extends CI_Model
 			$nameLike = "%$name%";
 			$params[] = $nameLike;
 		}
+
+		$sql .= " LIMIT ?, ?";
+		$params[] = $offset;
+		$params[] = $recordsPerPage;
 
 		$query = $this->db->query($sql, $params);
 

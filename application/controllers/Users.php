@@ -38,6 +38,7 @@ class Users extends CI_Controller
 
 			$user_data = array(
 				'id' => $user['id'],
+				'role' => $user['role'],
 				'logged_in' => true
 			);
 
@@ -48,6 +49,7 @@ class Users extends CI_Controller
 			} elseif ($user['role'] == 1) {
 				redirect('dashboard');
 			}
+
 		} else {
 			$data['error_message'] = $result['error'];
 			$data['error_message'] = 'Invalid Credentials.';

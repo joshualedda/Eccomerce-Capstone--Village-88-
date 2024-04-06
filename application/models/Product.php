@@ -17,6 +17,28 @@ class Product extends CI_Model
 		$query = $this->db->query($sql);
 		return $query->result_array();
 	}
+	public function getProductsPaginated($limit, $offset)
+	{
+		$sql = "SELECT products.id AS productId, products.*, categories.*
+            FROM products
+            LEFT JOIN categories ON categories.id = products.category_id
+            ORDER BY products.created_at DESC
+            LIMIT ?, ?";
+
+		$query = $this->db->query($sql, array($offset, $limit));
+		return $query->result_array();
+	}
+
+	//count procut
+
+	public function countProducts()
+	{
+		$sql = "SELECT COUNT(*) AS total_products FROM products";
+		$query = $this->db->query($sql);
+		$result = $query->row_array();
+		return $result['total_products'];
+	}
+
 
 	public function getProductsWithMainImages()
 	{
@@ -265,8 +287,8 @@ class Product extends CI_Model
 		if (!empty($name)) {
 			$sql .= " AND (products.name LIKE ? OR products.description LIKE ?)";
 			$nameLike = "%$name%";
-			$params[] = $nameLike;  // Add to params array instead of overwriting
-			$params[] = $nameLike;  // Add again for the second parameter
+			$params[] = $nameLike;
+			$params[] = $nameLike;
 		}
 
 		if (!empty($categoryId)) {
@@ -274,13 +296,12 @@ class Product extends CI_Model
 			$params[] = $categoryId;
 		}
 
-		// Apply price ordering based on user selection
 		if ($priceOrder == 'desc') {
 			$sql .= " ORDER BY products.price DESC";
 		} elseif ($priceOrder == 'asc') {
 			$sql .= " ORDER BY products.price ASC";
 		} else {
-			$sql .= " ORDER BY products.created_at DESC"; // Default order
+			$sql .= " ORDER BY products.created_at DESC";
 		}
 
 		$query = $this->db->query($sql, $params);

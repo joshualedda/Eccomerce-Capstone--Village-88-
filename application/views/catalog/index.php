@@ -90,7 +90,7 @@
 										<input type="submit" class="btn btn1 addToCartBtn" value="Add To Cart" />
 
 										<!-- Other buttons -->
-										<a href="#" class="btn btn1"> <i class="bi bi-heart"></i> </a>
+										<a href="#" class="btn btn1"> <i class="fa fa-heart" aria-hidden="true"></i> </a>
 										<a href="<?= base_url('product/view/' . $product['productId']) ?>" class="btn btn1"> View </a>
 									</div>
 								</form>

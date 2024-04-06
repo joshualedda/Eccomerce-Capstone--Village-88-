@@ -9,16 +9,28 @@ class Products extends CI_Controller
 		$this->prepareUserData();
 		$this->redirectIfUnauthorized();
 
+		$recordsPerPage = 5;
+		$currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
+		$offset = ($currentPage - 1) * $recordsPerPage;
+
 		if ($this->input->is_ajax_request()) {
 			$name = $this->input->post('name');
 			$category = $this->input->post('category');
 			$data['products'] = $this->Product->filterProducts($name, $category);
 			$this->load->view('components/productsTable', $data);
 		} else {
-			$data['products'] = $this->Product->getProducts();
+
+			$data['products'] = $this->Product->getProductsPaginated($recordsPerPage, $offset);
+			$totalCategories = $this->Product->countProducts();
+			$totalPages = ceil($totalCategories / $recordsPerPage);
+			$data['pagination'] = [
+				'currentPage' => $currentPage,
+				'totalPages' => $totalPages
+			];
+
 			$data['categories'] = $this->Category->getCategories();
 			$this->load->view('partials/header', $data);
-			$this->load->view('partials/navbar', $data);
+			$this->load->view('partials/navbar', $this->data);
 			$this->load->view('partials/sidebar');
 			$this->load->view('admin/products/index', $data);
 			$this->load->view('partials/footer');

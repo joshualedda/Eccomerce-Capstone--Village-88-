@@ -139,6 +139,8 @@
 										<th scope="col">Product Name</th>
 										<th scope="col">Total Amount</th>
 										<th scope="col">Order Date</th>
+										<th scope="col">Manage</th>
+
 									</tr>
 								</thead>
 								<tbody>
@@ -154,7 +156,7 @@
 												<td><?= $del['productName'] ?></td>
 												<td>$<?= $del['total_amount'] ?></td>
 											<td><?= (new DateTime($del['created_at']))->format('F j, Y') ?></td>
-
+												<td><a href="<?=base_url('rate/product/' .$del['productId']) ?>" class="btn btn-success btn-sm">Rate</a></td>
 											</tr>
 										<?php endforeach; ?>
 									<?php endif; ?>

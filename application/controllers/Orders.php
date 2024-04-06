@@ -10,6 +10,11 @@ class Orders extends CI_Controller
 		$this->redirectIfUnauthorized();
 		$data['title'] = 'Orders';
 
+		//pagination
+		$recordsPerPage = 5;
+		$currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
+		$offset = ($currentPage - 1) * $recordsPerPage;
+
 		if ($this->input->is_ajax_request()) {
 			$name = $this->input->post('name');
 			$status = $this->input->post('status');
@@ -18,7 +23,16 @@ class Orders extends CI_Controller
 			$this->load->view('components/ordersTable', $data);
 		} else {
 
-			$data['orders'] = $this->Order->getOrders();
+
+			
+			$data['orders'] = $this->Order->getOrdersPaginated($recordsPerPage, $offset);
+			$totalCategories = $this->Order->countOrders();
+			$totalPages = ceil($totalCategories / $recordsPerPage);
+			$data['pagination'] = [
+				'currentPage' => $currentPage,
+				'totalPages' => $totalPages
+			];
+
 			$this->load->view('partials/header', $data);
 			$this->load->view('partials/navbar', $this->data);
 			$this->load->view('partials/sidebar');
@@ -101,4 +115,6 @@ class Orders extends CI_Controller
 			echo json_encode(array('success' => false, 'message' => 'Error updating status'));
 		}
 	}
+
+	
 }

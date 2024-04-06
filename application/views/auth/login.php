@@ -8,7 +8,7 @@
 				Login to order.
 			</div>
 			<div class="card-body">
-				<form action="<?= base_url('login/process') ?>" method="POST">
+				<form action="<?= base_url('users/login') ?>" method="POST">
 				<input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
 
 					<div class="mb-3">

@@ -28,7 +28,7 @@
 
  							<li class="nav-item position-relative">
  								<a class="nav-link text-dark" href="<?=base_url('carts') ?>">
- 									<i class="bi bi-cart"></i> Carts
+								 <i class="fa fa-shopping-cart" aria-hidden="true"></i>
 									 <span id="cartTotal" class="position-absolute top-0 start-80 translate-middle badge rounded-pill bg-danger">
 							<?= $cartsTotal ?>
 							<span class="visually-hidden">unread messages</span>
@@ -40,11 +40,21 @@
 
  							<li class="nav-item dropdown">
  								<a class="nav-link text-dark dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
- 									<i class="bi bi-person-circle"></i>
+								 <i class="fa fa-user-circle-o" aria-hidden="true"></i>
  									<?= $user_data['first_name'] ?? '' ?> <?= $user_data['last_name'] ?? '' ?>
  								</a>
  								<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
- 									<li><a class="dropdown-item" href="<?= base_url('account/profile') ?>"><i class="fa fa-user"></i> Profile</a></li>
+
+								 <?php if (isset($role) && $role == 1) : ?>
+
+									<li><a class="dropdown-item" href="<?= base_url('profile') ?>"><i class="fa fa-user"></i> Profile</a></li>
+									<li><a class="dropdown-item" href="<?= base_url('dashboard') ?>"><i class="fa fa-user"></i> Dashboard</a></li>
+									<?php else : ?>
+										<li><a class="dropdown-item" href="<?= base_url('account/profile') ?>"><i class="fa fa-user"></i> Profile</a></li>
+
+									<?php endif; ?>
+
+
  									<li><a class="dropdown-item" href="<?= base_url('orders/track') ?>"><i class="fa fa-list"></i> My Orders</a></li>
  									<li><a class="dropdown-item" href="<?= base_url('account/profile') ?>"><i class="fa fa-heart"></i> My Wishlist</a></li>
  									<li><a class="dropdown-item" href="<?= base_url('carts') ?>"><i class="fa fa-shopping-cart"></i> My Cart</a></li>

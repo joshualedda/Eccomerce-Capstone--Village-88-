@@ -79,6 +79,7 @@ class Catalogs extends CI_Controller
 	{
 		$data['product'] = $this->Product->getProduct($productId);
 		$data['image'] = $this->Product->getProductMainImage($productId);
+		$data['ratings'] = $this->Rating->getProductRatings($productId);
 
 		$categoryId = $data['product']['category_id'];
 		$data['items'] = $this->Product->getSimilarItems($categoryId);
