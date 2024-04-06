@@ -127,8 +127,12 @@
 
 									<label class="star star-1" for="star-1"></label>
 								</div>
+						<span class="error text-sm text-danger"><?= form_error('rating') ?></span> 
+
 								<div class="form-group">
 									<textarea name="comment" class="form-control" rows="3" placeholder="Enter your reply here"></textarea>
+						<span class="error text-sm text-danger"><?= form_error('comment') ?></span> 
+							
 								</div>
 								<div class="text-end my-2">
 									<input type="submit" class="btn btn-success" value="Reply" />

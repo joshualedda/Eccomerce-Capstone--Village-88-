@@ -5,16 +5,18 @@ class Catalogs extends CI_Controller
 {
 	public function index()
 	{
+
 		if ($this->input->is_ajax_request()) {
 			$name = $this->input->post('name');
 			$category = $this->input->post('category');
 			$priceOrder = $this->input->post('price_order');
+
 			$data['products'] = $this->Product->filterCatalog($name, $category, $priceOrder);
 			$this->load->view('components/catalogsPartial', $data);
+			$this->load->view('partials/footer');
 		} else {
-			$data['products'] = $this->Product->getProductsWithMainImages();
 			$data['categories'] = $this->Category->getCategories();
-
+			$data['products'] = $this->getProductsWithRatings();
 			$this->prepareUserData();
 			$this->load->view('partials/header', $this->data);
 			$this->load->view('partials/menu', $this->data);
@@ -79,7 +81,15 @@ class Catalogs extends CI_Controller
 	{
 		$data['product'] = $this->Product->getProduct($productId);
 		$data['image'] = $this->Product->getProductMainImage($productId);
+
 		$data['ratings'] = $this->Rating->getProductRatings($productId);
+
+		$data['averageRating'] = $this->calculateAverageRating($data['ratings']);
+
+		foreach ($data['ratings'] as &$review) {
+			$rating_id = $review['ratingId'];
+			$review['replies'] = $this->Reply->getReviewReplies($rating_id);
+		}
 
 		$categoryId = $data['product']['category_id'];
 		$data['items'] = $this->Product->getSimilarItems($categoryId);
@@ -99,6 +109,30 @@ class Catalogs extends CI_Controller
 		$this->load->view('catalog/view', $data);
 		$this->load->view('partials/footer');
 	}
+
+	private function calculateAverageRating($ratings)
+	{
+		$totalRatings = count($ratings);
+		$sumRatings = array_reduce($ratings, function ($carry, $rating) {
+			return $carry + $rating['rating'];
+		}, 0);
+		return ($totalRatings > 0) ? round($sumRatings / $totalRatings, 1) : 0;
+	}
+
+	public function getProductsWithRatings()
+	{
+		$products = $this->Product->getProductsWithMainImages();
+
+		foreach ($products as &$product) {
+			$productId = $product['productId'];
+			$product['ratings'] = $this->Rating->getProductRatings($productId);
+			$product['averageRating'] = $this->calculateAverageRating($product['ratings']);
+		}
+
+		return $products;
+	}
+
+
 
 	public function getCartTotal()
 	{

@@ -424,7 +424,7 @@
 /* stars */
 
 div.stars {
-	width: 270px;
+	width: 150px;
 
 	display: inline-block;
 }
@@ -442,7 +442,7 @@ label.star {
 
 	padding: 10px;
 
-	font-size: 36px;
+	font-size: 30px;
 }
 
 input.star:checked ~ label.star:before {

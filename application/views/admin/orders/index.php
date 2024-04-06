@@ -97,8 +97,8 @@
 		</div>
 
 		<?php if ($pagination['totalPages'] > 1): ?>
-    <nav aria-label="Page navigation" class="my-2" id="pagination" >
-        <ul class="pagination justify-content-center" >
+    <nav aria-label="Page navigation" class="my-2" id="pagination">
+        <ul class="pagination justify-content-center">
             <?php if ($pagination['currentPage'] > 1): ?>
                 <li class="page-item">
                     <a class="page-link" href="<?= base_url('orders/index/?page=' . ($pagination['currentPage'] - 1)) ?>" aria-label="Previous">
@@ -121,8 +121,12 @@
                 </li>
             <?php endif; ?>
         </ul>
+        <div class="text-center">Page <?= $pagination['currentPage'] ?> out of <?= $pagination['totalPages'] ?></div> <!-- Add this line -->
     </nav>
 <?php endif; ?>
+
+
+
 </main>
 
 

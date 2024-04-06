@@ -3,7 +3,10 @@
 		<button class="navbar-toggler sidebar-toggler" type="button" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
+		<a class="navbar-brand font-weight-bold text-dark text-muted" href="<?=base_url('catalogs')?>">VeggieCart</a>
 		<div class="d-flex justify-content-end flex-grow-1">
+			
+
 			<div class="nav-item dropdown">
 				<a class="nav-link text-dark dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 					<i class="bi bi-person-circle"></i>

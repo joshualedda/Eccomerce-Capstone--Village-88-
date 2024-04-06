@@ -49,10 +49,19 @@ class Rating extends CI_Model
 
 	public function getProductRatings($productId)
 	{
-		$sql = 'SELECT * FROM ratings WHERE product_id = ?';
+		$sql = 'SELECT ratings.*,  
+				ratings.created_at AS ratingsCreated,
+				ratings.id AS ratingId,
+				CONCAT(users.first_name, " ", users.last_name) AS UserName 
+				FROM ratings
+				LEFT JOIN users
+				ON users.id = ratings.user_id
+				WHERE ratings.product_id = ?';
 		$query = $this->db->query($sql, array($productId));
 		return $query->result_array();
 	}
+	
+	
 
 
 }

@@ -22,10 +22,18 @@
 					</h4>
 					<hr>
 					<p class="product-path">
-						Catalogs / Product / <?= $product['name'] ?>
+    Ratings: <?= ($averageRating > 0) ? $averageRating : "No Ratings Yet" ?>
+</p>
+
+
+					<p class="product-path">
+						Catalogs / Product /
+						<?= $product['name'] ?>
 					</p>
 					<div>
-						<span class="selling-price">$ <?= $product['price'] ?></span>
+						<span class="selling-price">$
+							<?= $product['price'] ?>
+						</span>
 					</div>
 
 					<form class="addToCartForm" action="<?= base_url('catalogs/addToCart') ?>" method="POST">
@@ -58,32 +66,84 @@
 			</div>
 		</div>
 
-		<h4 class="mt-5 mb-4">Reviews</h4>
 
-		<?php if ($ratings) : ?>	
+		<?php if ($ratings) : ?>
 			<?php foreach ($ratings as $rating) : ?>
 
-			<div>
-				<input disabled class="star star-5" id="star-5" type="radio" name="rating" value="5" <?php if ($rating['rating'] == 5) : ?> checked <?php endif; ?> />
-				<label class="star star-5" for="star-5"></label>
+				<div>
+					<input disabled class="star star-5" id="star-5" type="radio" name="rating" value="5" <?php if ($rating['rating'] == 5) : ?> checked <?php endif; ?> />
+					<label class="star star-5" for="star-5"></label>
 
-				<input disabled class="star star-4" id="star-4" type="radio" name="rating" value="4" <?php if ($rating['rating'] == 4) : ?> checked <?php endif; ?> />
-				<label class="star star-4" for="star-4"></label>
+					<input disabled class="star star-4" id="star-4" type="radio" name="rating" value="4" <?php if ($rating['rating'] == 4) : ?> checked <?php endif; ?> />
+					<label class="star star-4" for="star-4"></label>
 
-				<input disabled class="star star-3" id="star-3" type="radio" name="rating" value="3" <?php if ($rating['rating'] == 3) : ?> checked <?php endif; ?> />
-				<label class="star star-3" for="star-3"></label>
+					<input disabled class="star star-3" id="star-3" type="radio" name="rating" value="3" <?php if ($rating['rating'] == 3) : ?> checked <?php endif; ?> />
+					<label class="star star-3" for="star-3"></label>
 
-				<input disabled class="star star-2" id="star-2" type="radio" name="rating" value="2" <?php if ($rating['rating'] == 2) : ?> checked <?php endif; ?> />
-				<label class="star star-2" for="star-2"></label>
+					<input disabled class="star star-2" id="star-2" type="radio" name="rating" value="2" <?php if ($rating['rating'] == 2) : ?> checked <?php endif; ?> />
+					<label class="star star-2" for="star-2"></label>
 
-				<input disabled class="star star-1" id="star-1" type="radio" name="rating" value="1" <?php if ($rating['rating'] == 1) : ?> checked <?php endif; ?> />
-				<label class="star star-1" for="star-1"></label>
-			</div>
-			<div class="form-group">
-				<label for="" class="form-label">Joshua Ledda</label>
-				<textarea disabled class="form-control" rows="3"><?= $rating['comment'] ?></textarea>
-			</div>
+					<input disabled class="star star-1" id="star-1" type="radio" name="rating" value="1" <?php if ($rating['rating'] == 1) : ?> checked <?php endif; ?> />
+					<label class="star star-1" for="star-1"></label>
+				</div>
+
+				<div class="form-group">
+					<h6 class="my-2">Reviews</h6>
+
+					<label for="reply" class="form-label">
+						<?= $rating['UserName'] ?? " " ?> |<span>
+							<span>
+								<?= date('F j, Y H:i:s', strtotime($rating['ratingsCreated'])) ?>
+							</span>
+
+						</span>
+					</label>
+					<textarea disabled class="form-control" rows="3"><?= $rating['comment'] ?></textarea>
+				</div>
+
+
+
+		
+				<?php if (isset($rating['replies']) && !empty($rating['replies'])) : ?>
+						<?php foreach ($rating['replies'] as $reply) : ?>
+            <div class="form-group mx-5">
+                <h6 class="my-2">Replies</h6>
+                <label for="reply" class="form-label">
+                    <?= $reply['UserName'] ?? " " ?> | <span><?= date('F j, Y H:i:s', strtotime($reply['replyCreated'])) ?></span>
+                </label>
+                <textarea disabled class="form-control" rows="3"><?= $reply['replyComment'] ?></textarea>
+            </div>
 			<?php endforeach; ?>
+					<?php else : ?>
+						<div class="card-body">
+							<p class="card-text">No replies yet.</p>
+						</div>
+					<?php endif; ?>
+
+
+
+
+
+
+				<form action="<?= base_url('replies/reply') ?>" method="POST">
+					<input type="hidden" name="review_id" value="<?= $rating['ratingId'] ?>">
+
+					<textarea placeholder="POST A REPLY" name="reply" class="form-control mx-4 mt-3" rows="3"></textarea>
+					<span class="error text-sm text-danger"><?= form_error('reply') ?></span>
+
+					<div class="text-end">
+						<input type="submit" name="submit" class="btn btn-success my-2" value="Reply">
+					</div>
+				</form>
+
+
+
+
+				<div class="border-bottom my-3"></div>
+			<?php endforeach; ?>
+		<?php else : ?>
+			No reviews to the product yet.
+			<div class="border-bottom my-3"></div>
 		<?php endif; ?>
 
 
@@ -108,7 +168,9 @@
 								</a>
 							</h5>
 							<div>
-								<span class="selling-price">$<?= $item['price'] ?></span>
+								<span class="selling-price">$
+									<?= $item['price'] ?>
+								</span>
 							</div>
 
 							<form class="addToCartForm" action="<?= base_url('catalogs/addToCart') ?>" method="POST">
@@ -119,17 +181,14 @@
 									<input type="submit" class="btn btn1 addToCartBtn" value="Add To Cart" />
 
 									<a href="#" class="btn btn1"> <i class="fa fa-heart" aria-hidden="true"></i> </a>
-									<a href="<?= base_url('product/view/' . $item['productId']) ?>" class="btn btn1"> View </a>
+									<a href="<?= base_url('product/view/' . $item['productId']) ?>" class="btn btn1"> View
+									</a>
 								</div>
 							</form>
 						</div>
 					</div>
 				</div>
 			<?php endforeach; ?>
-
-
-
-
 		</div>
 	</div>
 </div>

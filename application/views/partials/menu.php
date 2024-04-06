@@ -48,7 +48,7 @@
 								 <?php if (isset($role) && $role == 1) : ?>
 
 									<li><a class="dropdown-item" href="<?= base_url('profile') ?>"><i class="fa fa-user"></i> Profile</a></li>
-									<li><a class="dropdown-item" href="<?= base_url('dashboard') ?>"><i class="fa fa-user"></i> Dashboard</a></li>
+									<li><a class="dropdown-item" href="<?= base_url('dashboard') ?>">	<i class="fa fa-pie-chart" aria-hidden="true"></i> Dashboard</a></li>
 									<?php else : ?>
 										<li><a class="dropdown-item" href="<?= base_url('account/profile') ?>"><i class="fa fa-user"></i> Profile</a></li>
 

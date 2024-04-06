@@ -53,8 +53,11 @@ class Ratings extends CI_Controller
 				echo json_encode(array('success' => false, 'message' => $result['error']));
 			} else {
 				$data['error_message'] = $result['error'];
-				redirect('rate/product/' . $productId);
+				$this->index($productId);
 			}
 		}
 	}
+
+	
+
 }
