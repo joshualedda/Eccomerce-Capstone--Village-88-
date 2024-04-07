@@ -48,11 +48,11 @@ class Product extends CI_Model
 				LEFT JOIN categories ON categories.id = products.category_id
 				LEFT JOIN images ON images.product_id = products.id AND images.main = 1
 				ORDER BY products.stocks DESC";
-	
+
 		$query = $this->db->query($sql);
 		return $query->result_array();
 	}
-	
+
 
 
 	public function getProductMainImage($productId)
@@ -138,6 +138,7 @@ class Product extends CI_Model
 		return $query->result_array();
 	}
 
+
 	//insert product
 	public function addProduct()
 	{
@@ -146,6 +147,7 @@ class Product extends CI_Model
 		$this->form_validation->set_rules('category', 'Category', 'required');
 		$this->form_validation->set_rules('price', 'Price', 'required|numeric');
 		$this->form_validation->set_rules('stocks', 'Stocks', 'required|numeric');
+
 
 		if ($this->form_validation->run() == false) {
 			return array('success' => false, 'error' => validation_errors());
@@ -156,6 +158,12 @@ class Product extends CI_Model
 		$category = $this->security->xss_clean($this->input->post('category'));
 		$price = $this->security->xss_clean($this->input->post('price'));
 		$stocks = $this->security->xss_clean($this->input->post('stocks'));
+
+
+		$uploaded_images = $this->uploadImages();
+		if (empty($uploaded_images)) {
+			return array('success' => false, 'error' => 'Please upload at least one image.');
+		} 
 
 		$sql = "SELECT * FROM products WHERE name = ? LIMIT 1";
 		$existing_product = $this->db->query($sql, array($product))->row();
@@ -199,14 +207,15 @@ class Product extends CI_Model
 		$uploaded_images = array();
 		$config['upload_path'] = 'assets/uploads/';
 		$config['allowed_types'] = 'jpg|jpeg|png|gif';
-		$config['max_size'] = 2048; // 2MB limit 
+		$config['max_size'] = 2048; // 2MB limit
 		$this->load->library('upload', $config);
 
-		if (count($_FILES['images']['name']) > 5) {
-			$this->session->set_flashdata('error_message', 'Maximum 5 images allowed.');
-		}
-
 		foreach ($_FILES['images']['name'] as $key => $image) {
+			if (count($uploaded_images) >= 5) {
+				$this->session->set_flashdata('error_message', 'Only the first 5 images were processed. Maximum 5 images allowed.');
+				break;
+			}
+
 			$_FILES['userfile']['name'] = $_FILES['images']['name'][$key];
 			$_FILES['userfile']['type'] = $_FILES['images']['type'][$key];
 			$_FILES['userfile']['tmp_name'] = $_FILES['images']['tmp_name'][$key];
@@ -217,9 +226,8 @@ class Product extends CI_Model
 				$data = $this->upload->data();
 				$uploaded_images[] = $data['file_name'];
 			} else {
+				// If there's an error with an image, inform the user about it
 				$this->session->set_flashdata('error_message', $this->upload->display_errors());
-				// test
-				echo ($this->upload->display_errors());
 			}
 		}
 

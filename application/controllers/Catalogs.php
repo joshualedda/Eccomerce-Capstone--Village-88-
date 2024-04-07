@@ -91,6 +91,12 @@ class Catalogs extends CI_Controller
 			$review['replies'] = $this->Reply->getReviewReplies($rating_id);
 		}
 
+		foreach ($data['ratings'] as &$rating) {
+			$rating['formattedDate'] = !empty($rating['ratingsCreated']) ? $this->formatRatingDate($rating['ratingsCreated']) : '';
+			$rating_id = $rating['ratingId'];
+			$rating['replies'] = $this->Reply->getReviewReplies($rating_id);
+		}
+
 		$categoryId = $data['product']['category_id'];
 		$data['items'] = $this->Product->getSimilarItems($categoryId);
 
@@ -108,6 +114,25 @@ class Catalogs extends CI_Controller
 		$this->load->view('partials/alert');
 		$this->load->view('catalog/view', $data);
 		$this->load->view('partials/footer');
+	}
+
+	public function formatRatingDate($ratingCreated)
+	{
+		$ratingDate = new DateTime($ratingCreated);
+		$currentDate = new DateTime();
+		$interval = $currentDate->diff($ratingDate);
+
+		if ($interval->days < 1) { // Within the same day
+			if ($interval->h < 1) { // Less than an hour
+				return $interval->format('%i minutes ago');
+			} else { // At least an hour
+				return $interval->format('%h hours %i minutes ago');
+			}
+		} elseif ($interval->days < 7) { // Within the same week
+			return $interval->format('%a days ago');
+		} else { // More than a week
+			return date('F j, Y H:i:s', strtotime($ratingCreated));
+		}
 	}
 
 	private function calculateAverageRating($ratings)

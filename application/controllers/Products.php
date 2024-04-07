@@ -70,6 +70,7 @@ class Products extends CI_Controller
 		$this->load->view('partials/toast');
 		$this->load->view('partials/navbar', $data);
 		$this->load->view('partials/sidebar');
+		$this->load->view('partials/alert');
 		$this->load->view('admin/products/create', $data);
 		$this->load->view('partials/footer');
 	}
@@ -93,7 +94,6 @@ class Products extends CI_Controller
 				$this->create();
 		}
 	}
-
 
 	}
 

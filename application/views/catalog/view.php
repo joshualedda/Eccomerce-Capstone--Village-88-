@@ -93,7 +93,7 @@
 					<label for="reply" class="form-label">
 						<?= $rating['UserName'] ?? " " ?> |<span>
 							<span>
-								<?= date('F j, Y H:i:s', strtotime($rating['ratingsCreated'])) ?>
+							<?= $rating['formattedDate'] ?>
 							</span>
 
 						</span>

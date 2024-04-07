@@ -55,19 +55,12 @@ $(document).ready(function () {
 				processData: false,
 				contentType: false,
 				success: function (response) {
-					if (response.success) {
-						updateCartTotal();
-						$("#message").html(response.message);
+						$("#message").html("Product Created Successfully");
 						$("#liveToast").removeClass("hide");
 						$(".toast").toast("show");
 						$("#createProduct")[0].reset();
 						$(".error-message").text("");
 						$("#imagePreview").empty();
-					} else {
-						$("#message").html(response.message);
-						$("#liveToast").removeClass("hide");
-						$(".toast").toast("show");
-					}
 				},
 				error: function (xhr, status, error) {
 					console.error(xhr.responseText);
@@ -83,6 +76,7 @@ $(document).ready(function () {
 		var price = $("#price").val().trim();
 		var stocks = $("#stocks").val().trim();
 		var files = $("#images")[0].files;
+		var mainImagesChecked = $(".main-image-checkbox:checked").length; 
 		var isValid = true;
 	
 		$(".error-message").text("");
@@ -132,7 +126,13 @@ $(document).ready(function () {
 			}
 		}
 	
+		if (mainImagesChecked === 0) {
+			$("#imageCheck").text("Please mark at least one image as main.");
+			isValid = false;
+		}
+	
 		return isValid;
 	}
+	
 	
 });

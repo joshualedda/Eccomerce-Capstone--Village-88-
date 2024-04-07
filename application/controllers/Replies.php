@@ -5,6 +5,18 @@ class Replies extends CI_Controller
 {
 	public function reply()
 	{
+		$user_id = $this->session->userdata('id');
+		if (!$user_id) {
+			if ($this->input->is_ajax_request()) {
+				echo json_encode(array('success' => false, 'message' => 'You need to login first.'));
+			} else {
+				$this->session->set_flashdata('error_message', 'You need to login first.');
+				redirect($_SERVER['HTTP_REFERER']);
+			}
+			return;
+		}
+
+		
 		$result = $this->Reply->createReply();
 
 		if ($result['success']) {

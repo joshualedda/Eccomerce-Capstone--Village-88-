@@ -74,6 +74,8 @@
 							<input type="file" class="form-control" id="images" name="images[]" accept="image/*" multiple>
 							<span id="imageValidate" class="text-sm text-danger"></span>
 							<div id="imagePreview" class="mt-2"></div>
+							<span id="imageCheck" class="error-message text-sm text-danger"></span>
+
 						</div>
 
 
