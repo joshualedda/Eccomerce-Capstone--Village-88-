@@ -3,9 +3,12 @@
 		<div class="row">
 			<div class="col-md-5 mt-3">
 				<div class="bg-white border">
-					<?php if (!empty($image) && isset($image['main_image_url'])) : ?>
-						<img src="<?= base_url('assets/uploads/' . $image['main_image_url']); ?>" alt="<?= $product['name']; ?>" class="img-fluid">
-					<?php else : ?>
+					<?php if (!empty($image) && isset($image['main_image_url'])): ?>
+						<div class="d-flex justify-content-center"> 
+						<img src="<?= base_url('assets/uploads/' . $image['main_image_url']); ?>"
+							alt="<?= $product['name']; ?>" class="img-fluid">
+						</div>
+					<?php else: ?>
 						<p>No main image available</p>
 					<?php endif; ?>
 				</div>
@@ -22,8 +25,9 @@
 					</h4>
 					<hr>
 					<p class="product-path">
-    Ratings: <?= ($averageRating > 0) ? $averageRating : "No Ratings Yet" ?>
-</p>
+						Ratings:
+						<?= ($averageRating > 0) ? $averageRating : "No Ratings Yet" ?>
+					</p>
 
 
 					<p class="product-path">
@@ -31,9 +35,8 @@
 						<?= $product['name'] ?>
 					</p>
 					<div>
-						<span class="selling-price">$
-							<?= $product['price'] ?>
-						</span>
+					<span class="selling-price">$<?= number_format($product['price'], 2) ?></span>
+
 					</div>
 
 					<form class="addToCartForm" action="<?= base_url('catalogs/addToCart') ?>" method="POST">
@@ -46,11 +49,12 @@
 
 						</div>
 
-						<input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
+						<input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>"
+							value="<?= $this->security->get_csrf_hash(); ?>">
 						<input type="hidden" name="product_id" value="<?= $product['id'] ?>" />
 						<div class="mt-2">
 							<input type="submit" class="btn btn1 addToCartBtn" value="Add To Cart" />
-							<a href="" class="btn btn1"> <i class="fa fa-heart"></i> Add To Wishlist </a>
+							<!-- <a href="" class="btn btn1"> <i class="fa fa-heart"></i> Add To Wishlist </a> -->
 						</div>
 					</form>
 
@@ -67,23 +71,23 @@
 		</div>
 
 
-		<?php if ($ratings) : ?>
-			<?php foreach ($ratings as $rating) : ?>
+		<?php if ($ratings): ?>
+			<?php foreach ($ratings as $rating): ?>
 
 				<div>
-					<input disabled class="star star-5" id="star-5" type="radio" name="rating" value="5" <?php if ($rating['rating'] == 5) : ?> checked <?php endif; ?> />
+					<input disabled class="star star-5" id="star-5" type="radio" name="rating" value="5" <?php if ($rating['rating'] == 5): ?> checked <?php endif; ?> />
 					<label class="star star-5" for="star-5"></label>
 
-					<input disabled class="star star-4" id="star-4" type="radio" name="rating" value="4" <?php if ($rating['rating'] == 4) : ?> checked <?php endif; ?> />
+					<input disabled class="star star-4" id="star-4" type="radio" name="rating" value="4" <?php if ($rating['rating'] == 4): ?> checked <?php endif; ?> />
 					<label class="star star-4" for="star-4"></label>
 
-					<input disabled class="star star-3" id="star-3" type="radio" name="rating" value="3" <?php if ($rating['rating'] == 3) : ?> checked <?php endif; ?> />
+					<input disabled class="star star-3" id="star-3" type="radio" name="rating" value="3" <?php if ($rating['rating'] == 3): ?> checked <?php endif; ?> />
 					<label class="star star-3" for="star-3"></label>
 
-					<input disabled class="star star-2" id="star-2" type="radio" name="rating" value="2" <?php if ($rating['rating'] == 2) : ?> checked <?php endif; ?> />
+					<input disabled class="star star-2" id="star-2" type="radio" name="rating" value="2" <?php if ($rating['rating'] == 2): ?> checked <?php endif; ?> />
 					<label class="star star-2" for="star-2"></label>
 
-					<input disabled class="star star-1" id="star-1" type="radio" name="rating" value="1" <?php if ($rating['rating'] == 1) : ?> checked <?php endif; ?> />
+					<input disabled class="star star-1" id="star-1" type="radio" name="rating" value="1" <?php if ($rating['rating'] == 1): ?> checked <?php endif; ?> />
 					<label class="star star-1" for="star-1"></label>
 				</div>
 
@@ -93,7 +97,7 @@
 					<label for="reply" class="form-label">
 						<?= $rating['UserName'] ?? " " ?> |<span>
 							<span>
-							<?= $rating['formattedDate'] ?>
+								<?= $rating['formattedDate'] ?>
 							</span>
 
 						</span>
@@ -103,22 +107,24 @@
 
 
 
-		
-				<?php if (isset($rating['replies']) && !empty($rating['replies'])) : ?>
-						<?php foreach ($rating['replies'] as $reply) : ?>
-            <div class="form-group mx-5">
-                <h6 class="my-2">Replies</h6>
-                <label for="reply" class="form-label">
-                    <?= $reply['UserName'] ?? " " ?> | <span><?= date('F j, Y H:i:s', strtotime($reply['replyCreated'])) ?></span>
-                </label>
-                <textarea disabled class="form-control" rows="3"><?= $reply['replyComment'] ?></textarea>
-            </div>
-			<?php endforeach; ?>
-					<?php else : ?>
-						<div class="card-body">
-							<p class="card-text">No replies yet.</p>
+
+				<?php if (isset($rating['replies']) && !empty($rating['replies'])): ?>
+					<?php foreach ($rating['replies'] as $reply): ?>
+						<div class="form-group mx-5">
+							<h6 class="my-2">Replies</h6>
+							<label for="reply" class="form-label">
+								<?= $reply['UserName'] ?? " " ?> | <span>
+									<?= date('F j, Y H:i:s', strtotime($reply['replyCreated'])) ?>
+								</span>
+							</label>
+							<textarea disabled class="form-control" rows="3"><?= $reply['replyComment'] ?></textarea>
 						</div>
-					<?php endif; ?>
+					<?php endforeach; ?>
+				<?php else: ?>
+					<div class="card-body">
+						<p class="card-text">No replies yet.</p>
+					</div>
+				<?php endif; ?>
 
 
 
@@ -129,7 +135,9 @@
 					<input type="hidden" name="review_id" value="<?= $rating['ratingId'] ?>">
 
 					<textarea placeholder="POST A REPLY" name="reply" class="form-control mx-4 mt-3" rows="3"></textarea>
-					<span class="error text-sm text-danger"><?= form_error('reply') ?></span>
+					<span class="error text-sm text-danger">
+						<?= form_error('reply') ?>
+					</span>
 
 					<div class="text-end">
 						<input type="submit" name="submit" class="btn btn-success my-2" value="Reply">
@@ -139,25 +147,28 @@
 
 
 
-				<div class="border-bottom my-3"></div>
+			<div class="border-bottom my-5"></div>
 			<?php endforeach; ?>
-		<?php else : ?>
-			No reviews to the product yet.
+		<?php else: ?>
+			<div class="my-3 text-center">
+				No reviews to the product yet.
+			</div>
+			<?php endif; ?>
 			<div class="border-bottom my-3"></div>
-		<?php endif; ?>
 
 
 		<div class="row">
 			<h4 class="mt-5 mb-4">Similar Products</h4>
 			<?php
-			foreach ($items as $item) : ?>
+			foreach ($items as $item): ?>
 				<div class="col-md-3 ">
 					<div class="product-card">
 						<div class="product-card-img">
 							<label class="stock <?= $item['stocks'] > 0 ? 'bg-success' : 'bg-danger'; ?>">
 								<?= $item['stocks'] > 0 ? 'In Stock' : 'Out of Stock'; ?>
 							</label>
-							<img src="<?= base_url('assets/uploads/' . ($item['main_image_url'] ? $item['main_image_url'] : 'default-image.jpg')); ?>" alt="<?= $item['name']; ?>">
+							<img src="<?= base_url('assets/uploads/' . ($item['main_image_url'] ? $item['main_image_url'] : 'default-image.jpg')); ?>"
+								alt="<?= $item['name']; ?>">
 
 						</div>
 						<div class="product-card-body">
@@ -168,19 +179,20 @@
 								</a>
 							</h5>
 							<div>
-								<span class="selling-price">$
-									<?= $item['price'] ?>
+							<span class="selling-price">$<?= number_format($item['price'], 2) ?></span>
+
 								</span>
 							</div>
 
 							<form class="addToCartForm" action="<?= base_url('catalogs/addToCart') ?>" method="POST">
 								<div class="mt-2">
-									<input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" class="csrf_token" value="<?= $this->security->get_csrf_hash(); ?>">
-									<input type="hidden" name="product_id" class="productId" value="<?= $item['productId'] ?>" />
+									<input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>"
+										class="csrf_token" value="<?= $this->security->get_csrf_hash(); ?>">
+									<input type="hidden" name="product_id" class="productId"
+										value="<?= $item['productId'] ?>" />
 									<input type="hidden" name="quantity" class="quantity" value="1" />
 									<input type="submit" class="btn btn1 addToCartBtn" value="Add To Cart" />
 
-									<a href="#" class="btn btn1"> <i class="fa fa-heart" aria-hidden="true"></i> </a>
 									<a href="<?= base_url('product/view/' . $item['productId']) ?>" class="btn btn1"> View
 									</a>
 								</div>

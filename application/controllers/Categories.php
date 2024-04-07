@@ -9,7 +9,7 @@ class Categories extends CI_Controller
 		$this->prepareUserData();
 		$this->redirectIfUnauthorized();
 
-		$recordsPerPage = 5;
+		$recordsPerPage = 10;
 		$currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
 		$offset = ($currentPage - 1) * $recordsPerPage;
 
@@ -30,9 +30,8 @@ class Categories extends CI_Controller
 				'currentPage' => $currentPage,
 				'totalPages' => $totalPages
 			];
-
 			$this->load->view('partials/header');
-			$this->load->view('partials/navbar');
+			$this->load->view('partials/navbar', $this->data);
 			$this->load->view('partials/sidebar');
 			$this->load->view('admin/categories/index', $data);
 			$this->load->view('partials/footer');
@@ -68,7 +67,7 @@ class Categories extends CI_Controller
 		$this->redirectIfUnauthorized();
 
 		$this->load->view('partials/header');
-		$this->load->view('partials/navbar');
+		$this->load->view('partials/navbar', $this->data);
 		$this->load->view('partials/sidebar');
 		$this->load->view('partials/alert');
 		$this->load->view('partials/toast');
@@ -104,7 +103,7 @@ class Categories extends CI_Controller
 
 		$data['category'] = $this->Category->getCategory($categoryId);
 		$this->load->view('partials/header');
-		$this->load->view('partials/navbar');
+		$this->load->view('partials/navbar', $this->data);
 		$this->load->view('partials/sidebar');
 		$this->load->view('partials/alert');
 		$this->load->view('admin/categories/view', $data);
@@ -112,9 +111,11 @@ class Categories extends CI_Controller
 	}
 	public function edit($categoryId)
 	{
+		$this->prepareUserData();
+		$this->redirectIfUnauthorized();
 		$data['category'] = $this->Category->getCategory($categoryId);
 		$this->load->view('partials/header');
-		$this->load->view('partials/navbar');
+		$this->load->view('partials/navbar', $this->data);
 		$this->load->view('partials/sidebar');
 		$this->load->view('partials/alert');
 		$this->load->view('partials/toast');

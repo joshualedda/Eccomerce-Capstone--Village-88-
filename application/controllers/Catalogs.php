@@ -5,6 +5,9 @@ class Catalogs extends CI_Controller
 {
 	public function index()
 	{
+		$recordsPerPage = 5;
+		$currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
+		$offset = ($currentPage - 1) * $recordsPerPage;
 
 		if ($this->input->is_ajax_request()) {
 			$name = $this->input->post('name');
@@ -15,8 +18,17 @@ class Catalogs extends CI_Controller
 			$this->load->view('components/catalogsPartial', $data);
 			$this->load->view('partials/footer');
 		} else {
+
+			$data['products'] = $this->getProductsWithRatings($recordsPerPage, $offset);
+			$totalCategories = $this->Product->countProducts();
+			$totalPages = ceil($totalCategories / $recordsPerPage);
+			$data['pagination'] = [
+				'currentPage' => $currentPage,
+				'totalPages' => $totalPages
+			];
+
 			$data['categories'] = $this->Category->getCategories();
-			$data['products'] = $this->getProductsWithRatings();
+
 			$this->prepareUserData();
 			$this->load->view('partials/header', $this->data);
 			$this->load->view('partials/menu', $this->data);
@@ -122,15 +134,15 @@ class Catalogs extends CI_Controller
 		$currentDate = new DateTime();
 		$interval = $currentDate->diff($ratingDate);
 
-		if ($interval->days < 1) { // Within the same day
-			if ($interval->h < 1) { // Less than an hour
+		if ($interval->days < 1) { 
+			if ($interval->h < 1) { 
 				return $interval->format('%i minutes ago');
-			} else { // At least an hour
+			} else {
 				return $interval->format('%h hours %i minutes ago');
 			}
-		} elseif ($interval->days < 7) { // Within the same week
+		} elseif ($interval->days < 7) { 
 			return $interval->format('%a days ago');
-		} else { // More than a week
+		} else { 
 			return date('F j, Y H:i:s', strtotime($ratingCreated));
 		}
 	}
@@ -144,9 +156,9 @@ class Catalogs extends CI_Controller
 		return ($totalRatings > 0) ? round($sumRatings / $totalRatings, 1) : 0;
 	}
 
-	public function getProductsWithRatings()
+	public function getProductsWithRatings($recordsPerPage, $offset)
 	{
-		$products = $this->Product->getProductsWithMainImages();
+		$products = $this->Product->getProductsWithMainImages($recordsPerPage, $offset);
 
 		foreach ($products as &$product) {
 			$productId = $product['productId'];

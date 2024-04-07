@@ -11,6 +11,7 @@ class Carts extends CI_Controller
 		$data['title'] = 'Carts';
 		$this->load->view('partials/header', $data);
 		$this->load->view('partials/menu', $this->data);
+		$this->load->view('partials/modal');
 		$this->load->view('partials/alert');
 		$this->load->view('cart/index', $data);
 		$this->load->view('partials/footer');

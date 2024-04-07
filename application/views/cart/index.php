@@ -26,45 +26,51 @@
 					</div>
 
 
-					<?php if (empty($carts)) : ?>
+					<?php if (empty($carts)): ?>
 
 						<div class="cart-item bg-light my-2">
 							<div class="row align-items-center">
 								<div class="col-md-4 my-auto">
-									<?php if (isset($is_logged_in) && $is_logged_in) : ?>
+									<?php if (isset($is_logged_in) && $is_logged_in): ?>
 										<p>No items in the cart.</p>
-									<?php else : ?>
+									<?php else: ?>
 										<p>Login to show the items.</p>
 									<?php endif; ?>
 								</div>
 							</div>
 						</div>
-					<?php else : ?>
-						<?php foreach ($carts as $cart) : ?>
+					<?php else: ?>
+						<?php foreach ($carts as $cart): ?>
 							<div class="cart-item bg-light my-2">
 								<div class="row align-items-center">
 									<div class="col-md-3 my-auto">
 										<a href="#">
-											<img src="<?= base_url('assets/uploads/' . $cart['mainImage']) ?>" style="width: 50px; height: 50px;" alt="">
-											<span class="product-name"><?= $cart['productName'] ?></span>
+											<img src="<?= base_url('assets/uploads/' . $cart['mainImage']) ?>"
+												style="width: 50px; height: 50px;" alt="">
+											<span class="product-name">
+												<?= $cart['productName'] ?>
+											</span>
 										</a>
 									</div>
 									<div class="col-md-2 my-auto">
-										<span class="price text-dark"><?= $cart['productPrice'] ?></span>
+										<span class="price text-dark">
+											<?= $cart['productPrice'] ?>
+										</span>
 									</div>
 
 									<div class="col-md-3 col-7 my-auto">
 										<div class="quantity">
 											<div class="input-group">
-												<span class="btn btn1 quantity-decrease"><i class="bi bi-dash"></i></span>
+												<span class="btn btn1 quantity-decrease"><i class="fa fa-minus"></i></span>
 												<input type="text" value="<?= $cart['totalQuantity'] ?>" class="input-quantity" id="quantityInput_<?= $cart['cartId'] ?>" />
-												<span class="btn btn1 quantity-increase"><i class="bi bi-plus"></i></span>
+												<span class="btn btn1 quantity-increase"><i class="fa fa-plus"></i></span>
 											</div>
 										</div>
 									</div>
 
 									<div class="col-md-2 my-auto">
-										Total: $<span id="totalAmount_<?= $cart['cartId'] ?>" class="price text-dark" data-price="<?= $cart['totalPrice'] ?>" data-cartid="<?= $cart['cartId'] ?>"><?= $cart['totalPrice'] ?></span>
+		Total: $<span id="totalAmount_<?= $cart['cartId'] ?>" class="price text-dark" data-price="<?= $cart['totalPrice'] ?>" data-cartid="<?= $cart['cartId'] ?>"><?= $cart['totalPrice'] ?>
+										</span>
 									</div>
 
 
@@ -72,8 +78,9 @@
 										<form action="carts/removeCartItem" method="POST">
 
 											<div class="remove">
-												<input type="hidden" value="<?=$cart['cartId'] ?>" name="cart_id">
-												<input type="submit" id="removeCart" class="btn btn-danger btn-sm" value="Remove"/>
+												<input type="hidden" value="<?= $cart['cartId'] ?>" name="cart_id">
+												<input type="submit" id="removeCart" class="btn btn-danger btn-sm"
+													value="Remove" />
 											</div>
 										</form>
 									</div>
@@ -86,7 +93,7 @@
 			</div>
 
 
-			<?php if (isset($is_logged_in) && $is_logged_in) : ?>
+			<?php if (isset($is_logged_in) && $is_logged_in): ?>
 				<div class="col-md-4">
 					<div class="card">
 						<div class="card-body">
@@ -94,7 +101,8 @@
 							<form action="<?= base_url('orders/createOrder') ?>" method="POST" class="row g-3">
 								<div class="col-md-12">
 									<div class="form-check">
-										<input class="form-check-input" type="checkbox" id="sameBillingCheckbox" name="checkbox">
+										<input class="form-check-input" type="checkbox" id="sameBillingCheckbox"
+											name="checkbox">
 										<label class="form-check-label" for="sameBillingCheckbox">Same in billing</label>
 									</div>
 								</div>
@@ -103,19 +111,23 @@
 
 									<div class="col-md-12">
 										<label for="inputFirstName" class="form-label">First Name</label>
-										<input type="text" class="form-control" id="firstNameShipping" name="firstNameShipping">
+										<input type="text" class="form-control" id="firstNameShipping"
+											name="firstNameShipping">
 									</div>
 									<div class="col-md-12">
 										<label for="inputLastName" class="form-label">Last Name</label>
-										<input type="text" class="form-control" id="lastNameShipping" name="lastNameShipping">
+										<input type="text" class="form-control" id="lastNameShipping"
+											name="lastNameShipping">
 									</div>
 									<div class="col-md-12">
 										<label for="inputPassword5" class="form-label">Address 1</label>
-										<input type="text" class="form-control" id="address1Shipping" name="address1Shipping">
+										<input type="text" class="form-control" id="address1Shipping"
+											name="address1Shipping">
 									</div>
 									<div class="col-md-12">
 										<label for="inputAddress5" class="form-label">Address 2</label>
-										<input type="text" class="form-control" id="address2Shipping" name="address2Shipping">
+										<input type="text" class="form-control" id="address2Shipping"
+											name="address2Shipping">
 									</div>
 									<div class="col-md-4">
 										<label for="inputAddress2" class="form-label">City</label>
@@ -137,7 +149,8 @@
 
 									<div class="col-md-6">
 										<label for="inputFirstName" class="form-label">First Name</label>
-										<input type="text" class="form-control" id="firstNameBilling" name="firstNameBilling">
+										<input type="text" class="form-control" id="firstNameBilling"
+											name="firstNameBilling">
 									</div>
 									<div class="col-md-6">
 										<label for="inputLastName" class="form-label">Last Name</label>
@@ -174,15 +187,42 @@
 									</div>
 									<div>
 										<p>&nbsp;</p>
-										<p id="totalItemAmount" class="fw-bold">$<?= !empty($totalCartAmount) ? $totalCartAmount : '0.00' ?></p>
+										<p id="totalItemAmount" class="fw-bold">$
+											<?= !empty($totalCartAmount) ? $totalCartAmount : '0.00' ?>
+										</p>
 
-										<p id="totalItemAmount" class="fw-bold">$<?= !empty($totalCartAmount) ? $totalCartAmount : '0.00' ?></p>
+										<p id="totalItemAmount" class="fw-bold">$
+											<?= !empty($totalCartAmount) ? $totalCartAmount : '0.00' ?>
+										</p>
+									</div>
+								</div>
+								<!-- Modal -->
+								<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+									aria-hidden="true">
+									<div class="modal-dialog">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+												<button type="button" class="btn-close" data-bs-dismiss="modal"
+													aria-label="Close"></button>
+											</div>
+											<div class="modal-body">
+												...
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-secondary"
+													data-bs-dismiss="modal">Close</button>
+												<input type="submit" class="btn btn-primary" value="Submit" />
+											</div>
+										</div>
 									</div>
 								</div>
 
 
-								<button type="submit" class="btn btn-primary">Procedd To CheckOut</button>
-
+								<button type="button" class="btn btn-success" data-bs-toggle="modal"
+									data-bs-target="#exampleModal">
+									Process To Checkout
+								</button>
 							</form>
 
 
@@ -193,7 +233,7 @@
 				</div>
 
 
-			<?php else : ?>
+			<?php else: ?>
 			<?php endif; ?>
 
 
@@ -207,12 +247,12 @@
 </div>
 </div>
 <script>
-	$(document).ready(function() {
+	$(document).ready(function () {
 		if ($('#sameBillingCheckbox').is(':checked')) {
 			$('#billingForm').hide();
 		}
 
-		$('#sameBillingCheckbox').on('change', function() {
+		$('#sameBillingCheckbox').on('change', function () {
 			if ($(this).is(':checked')) {
 				$('#billingForm').hide();
 			} else {

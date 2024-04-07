@@ -38,20 +38,41 @@ class Product extends CI_Model
 		$result = $query->row_array();
 		return $result['total_products'];
 	}
-
-
-	public function getProductsWithMainImages()
+	public function getProductsWithMainImages($recordsPerPage, $offset)
 	{
-		$sql = "SELECT products.id AS productId, products.name, products.description, products.price, products.stocks, categories.category AS categoryName,
-						   COALESCE(images.image, '') AS main_image_url
+		$sql = "SELECT products.id AS productId, 
+					   products.name, 
+					   products.description, 
+					   products.price, 
+					   products.stocks, 
+					   categories.category AS categoryName,
+					   COALESCE(images.image, '') AS main_image_url
 				FROM products
 				LEFT JOIN categories ON categories.id = products.category_id
 				LEFT JOIN images ON images.product_id = products.id AND images.main = 1
-				ORDER BY products.stocks DESC";
-
-		$query = $this->db->query($sql);
-		return $query->result_array();
+				ORDER BY products.stocks DESC
+				LIMIT ?, ?";
+	
+		$query = $this->db->query($sql, array($offset, $recordsPerPage));
+		$results = $query->result_array();
+	
+		foreach ($results as &$result) {
+			if (empty($result['main_image_url'])) {
+				$newestImageQuery = "SELECT image
+									 FROM images
+									 WHERE product_id = ?
+									 ORDER BY created_at DESC
+									 LIMIT 1";
+				$newestImageQueryResult = $this->db->query($newestImageQuery, array($result['productId']))->row_array();
+	
+				$result['main_image_url'] = !empty($newestImageQueryResult) ? $newestImageQueryResult['image'] : '';
+			}
+		}
+	
+		return $results;
 	}
+	
+	
 
 
 
@@ -278,18 +299,35 @@ class Product extends CI_Model
 	// Delete Image
 	public function deleteProductImage($imageId)
 	{
-		$sql = "DELETE FROM images 
-				WHERE id = ?";
-		$this->db->query($sql, array($imageId));
+		$sql = "SELECT image FROM images WHERE id = ?";
+		$query = $this->db->query($sql, array($imageId));
+		$image = $query->row_array();
+	
+		if (!$image) {
+			return ['success' => false, 'error' => 'Image not found'];
+		}
+	
+		$filePath = FCPATH . 'assets/uploads/' . $image['image'];
+	
+		if (file_exists($filePath)) {
+			unlink($filePath);
+		}
+	
+		$sqlDelete = "DELETE FROM images WHERE id = ?";
+		$this->db->query($sqlDelete, array($imageId));
+	
+		return ['success' => true];
 	}
+	
 
 	//Search Catalog
 	public function filterCatalog($name, $categoryId, $priceOrder)
 	{
-		$sql = "SELECT products.id AS productId, products.name, products.description, products.price, products.stocks, 
+		$sql = "SELECT products.id AS productId, products.name, products.description, products.price, products.stocks,  categories.category AS categoryName,
 				COALESCE(images.image, (SELECT image FROM images WHERE product_id = products.id AND images.main = 1 LIMIT 1)) AS main_image_url
 				FROM products
 				LEFT JOIN images ON images.product_id = products.id
+				LEFT JOIN categories ON categories.id = products.category_id
 				WHERE 1";
 
 		$params = [];

@@ -9,7 +9,7 @@ class Products extends CI_Controller
 		$this->prepareUserData();
 		$this->redirectIfUnauthorized();
 
-		$recordsPerPage = 5;
+		$recordsPerPage = 10;
 		$currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
 		$offset = ($currentPage - 1) * $recordsPerPage;
 

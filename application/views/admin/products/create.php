@@ -3,7 +3,8 @@
 		<h1 class="text-dark">Product Create</h1>
 		<nav class="my-2">
 			<ol class="breadcrumb">
-				<li class="breadcrumb-item text-dark"><a href="<?= base_url('dashboard') ?>" class="text-decoration-none">Home</a></li>
+				<li class="breadcrumb-item text-dark"><a href="<?= base_url('dashboard') ?>"
+						class="text-decoration-none">Home</a></li>
 				<li class="breadcrumb-item active text-dark">Product New</li>
 			</ol>
 		</nav>
@@ -20,9 +21,11 @@
 				<div class="card-body">
 					<h5 class="card-title">Product Information</h5>
 
-					<form id="createProduct" class="row g-3" action="<?= base_url('products/store') ?>" method="POST" enctype="multipart/form-data">
+					<form id="createProduct" class="row g-3" action="<?= base_url('products/store') ?>" method="POST"
+						enctype="multipart/form-data">
 
-						<input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
+						<input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>"
+							value="<?= $this->security->get_csrf_hash(); ?>">
 
 						<div class="col-md-12">
 							<label class="form-label">Product Name</label>
@@ -44,8 +47,10 @@
 							<label for="inputState" class="form-label">Category</label>
 							<select id="category" class="form-select" name="category">
 								<option selected value="">Choose Below</option>
-								<?php foreach ($categories as $category) : ?>
-									<option value="<?= $category['id']; ?>"><?= $category['category']; ?></option>
+								<?php foreach ($categories as $category): ?>
+									<option value="<?= $category['id']; ?>">
+										<?= $category['category']; ?>
+									</option>
 								<?php endforeach; ?>
 							</select>
 							<?= form_error('category', '<span class="error text-sm text-danger">', '</span>'); ?>
@@ -71,16 +76,19 @@
 
 						<div class="col-md-6">
 							<label for="inputCity" class="form-label">Upload Image (Max 5)</label>
-							<input type="file" class="form-control" id="images" name="images[]" accept="image/*" multiple>
+							<input type="file" class="form-control" id="images" name="images[]" accept="image/*"
+								multiple>
 							<span id="imageValidate" class="text-sm text-danger"></span>
-							<div id="imagePreview" class="mt-2"></div>
-							<span id="imageCheck" class="error-message text-sm text-danger"></span>
+						<span id="imageCheck" class="error-message text-sm text-danger"></span>
 
 						</div>
-
+						<div class="col-md-12">
+						<div id="imagePreview" class="mt-2 row"></div>
+						</div>
 
 						<div class="text-end">
-							<input id="submitProduct" type="submit" name="submit" value="Add Product" class="btn btn-primary">
+							<input id="submitProduct" type="submit" name="submit" value="Add Product"
+								class="btn btn-primary">
 						</div>
 
 					</form>
