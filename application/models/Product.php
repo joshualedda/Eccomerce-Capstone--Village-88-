@@ -52,10 +52,10 @@ class Product extends CI_Model
 				LEFT JOIN images ON images.product_id = products.id AND images.main = 1
 				ORDER BY products.stocks DESC
 				LIMIT ?, ?";
-	
+
 		$query = $this->db->query($sql, array($offset, $recordsPerPage));
 		$results = $query->result_array();
-	
+
 		foreach ($results as &$result) {
 			if (empty($result['main_image_url'])) {
 				$newestImageQuery = "SELECT image
@@ -64,15 +64,15 @@ class Product extends CI_Model
 									 ORDER BY created_at DESC
 									 LIMIT 1";
 				$newestImageQueryResult = $this->db->query($newestImageQuery, array($result['productId']))->row_array();
-	
+
 				$result['main_image_url'] = !empty($newestImageQueryResult) ? $newestImageQueryResult['image'] : '';
 			}
 		}
-	
+
 		return $results;
 	}
-	
-	
+
+
 
 
 
@@ -184,7 +184,7 @@ class Product extends CI_Model
 		$uploaded_images = $this->uploadImages();
 		if (empty($uploaded_images)) {
 			return array('success' => false, 'error' => 'Please upload at least one image.');
-		} 
+		}
 
 		$sql = "SELECT * FROM products WHERE name = ? LIMIT 1";
 		$existing_product = $this->db->query($sql, array($product))->row();
@@ -269,32 +269,47 @@ class Product extends CI_Model
 		if ($this->form_validation->run() == false) {
 			return array('success' => false, 'error' => validation_errors());
 		}
+
 		$product = $this->security->xss_clean($this->input->post('product'));
 		$description = $this->security->xss_clean($this->input->post('description'));
 		$category = $this->security->xss_clean($this->input->post('category'));
 		$price = $this->security->xss_clean($this->input->post('price'));
 		$stocks = $this->security->xss_clean($this->input->post('stocks'));
 
-		$sql = "UPDATE products SET category_id = ?, name = ?, description = ?, price = ?, stocks = ? 
-		WHERE id = ?";
-
+		// Update product information
+		$sql = "UPDATE products SET category_id = ?, name = ?, description = ?, price = ?, stocks = ? WHERE id = ?";
 		$query = $this->db->query($sql, array($category, $product, $description, $price, $stocks, $productId));
 
 		if ($query) {
-			$product_id = $productId;
-
-			$uploaded_images = $this->uploadImages();
-			$main_images = $this->input->post('main_image');
-			foreach ($uploaded_images as $key => $image) {
-				$main_flag = isset($main_images[$key]) ? 1 : 0;
-				$this->db->insert('images', array('product_id' => $product_id, 'image' => $image, 'main' => $main_flag));
-			}
+			// Upload and insert images only if the update is successful
+			$this->uploadAndInsertImages($productId);
 
 			return array('success' => true);
 		} else {
-			return array('success' => false, 'error' => 'Error.');
+			return array('success' => false, 'error' => 'Error updating product.');
 		}
 	}
+
+	private function uploadAndInsertImages($productId)
+	{
+		if ($this->checkImageLimit($productId)) {
+			$this->session->set_flashdata('error_message', 'Maximum 5 images allowed.');
+			return;
+		}
+
+		$uploaded_images = $this->uploadImages();
+
+		foreach ($uploaded_images as $key => $image) {
+			if ($this->checkImageLimit($productId)) {
+				$this->session->set_flashdata('error_message', 'Maximum 5 images allowed.');
+				break;
+			}
+
+			$main_flag = $this->input->post('main_image')[$key] ?? 0;
+			$this->db->insert('images', array('product_id' => $productId, 'image' => $image, 'main' => $main_flag));
+		}
+	}
+
 
 	// Delete Image
 	public function deleteProductImage($imageId)
@@ -302,23 +317,23 @@ class Product extends CI_Model
 		$sql = "SELECT image FROM images WHERE id = ?";
 		$query = $this->db->query($sql, array($imageId));
 		$image = $query->row_array();
-	
+
 		if (!$image) {
 			return ['success' => false, 'error' => 'Image not found'];
 		}
-	
+
 		$filePath = FCPATH . 'assets/uploads/' . $image['image'];
-	
+
 		if (file_exists($filePath)) {
 			unlink($filePath);
 		}
-	
+
 		$sqlDelete = "DELETE FROM images WHERE id = ?";
 		$this->db->query($sqlDelete, array($imageId));
-	
+
 		return ['success' => true];
 	}
-	
+
 
 	//Search Catalog
 	public function filterCatalog($name, $categoryId, $priceOrder)
@@ -356,4 +371,37 @@ class Product extends CI_Model
 
 		return $query->result_array();
 	}
+
+	public function updateMainImage($imageId, $mainStatus)
+	{
+		$this->db->trans_start();
+
+		$productId = $this->getProductIdForImage($imageId);
+		$sql = "UPDATE images SET main = 0 WHERE product_id = ?";
+		$this->db->query($sql, array($productId));
+
+		$sql = "UPDATE images SET main = ? WHERE id = ?";
+		$this->db->query($sql, array($mainStatus, $imageId));
+
+		$success = $this->db->trans_complete();
+
+		return $success;
+	}
+
+	public function getProductIdForImage($imageId)
+	{
+		$sql = "SELECT product_id FROM images WHERE id = ?";
+		$query = $this->db->query($sql, array($imageId));
+
+		if ($query && $query->num_rows() > 0) {
+			$result = $query->row();
+			return $result->product_id;
+		} else {
+			return null;
+		}
+	}
+
+
+
+
 }

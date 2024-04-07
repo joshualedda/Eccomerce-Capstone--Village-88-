@@ -17,6 +17,7 @@ class Ratings extends CI_Controller
 		$this->load->view('partials/header', $data);
 		$this->load->view('partials/menu', $this->data);
 		$this->load->view('partials/alert');
+		$this->load->view('partials/toast');
 		$this->load->view('ratings/index', $data);
 		$this->load->view('partials/footer');
 	}
@@ -40,12 +41,15 @@ class Ratings extends CI_Controller
 	public function rate($productId)
 	{
 		$result = $this->Rating->createRating($productId);
+		$data['product'] = $this->Product->getProduct($productId);
+		$data['ratings'] = $this->Rating->getUserRating($productId);
 
 		if ($result['success']) {
 			if ($this->input->is_ajax_request()) {
-				echo json_encode(array('success' => true, 'message' => 'Succesfully review the item'));
+				$data['partialView'] = $this->load->view('components/ratingPartial', $data, true);
+				echo json_encode(array('success' => true, 'message' => 'Successfully reviewed the item', 'partialView' => $data['partialView']));
 			} else {
-				$this->session->set_flashdata('success_message', 'Succesfully review the item');
+				$this->session->set_flashdata('success_message', 'Successfully reviewed the item');
 				redirect('rate/product/' . $productId);
 			}
 		} else {
@@ -57,7 +61,6 @@ class Ratings extends CI_Controller
 			}
 		}
 	}
-
 	
 
 }

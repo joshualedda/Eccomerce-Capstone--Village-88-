@@ -18,6 +18,7 @@ class Categories extends CI_Controller
 			$data['categories'] = $this->Category->filterCategories($name, $recordsPerPage, $offset);
 			
 			$this->load->view('components/categoriesTable', $data);
+
 		} else {
 
 			$data['categories'] = $this->Category->getCategoriesPaginated($recordsPerPage, $offset);

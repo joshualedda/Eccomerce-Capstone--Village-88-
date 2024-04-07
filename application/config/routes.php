@@ -67,6 +67,9 @@ $route['category/search'] = 'categories/index';
 $route['product/view/(:num)'] = 'catalogs/view/$1';
 //Catalog Seach
 $route['catalog/search'] = 'catalogs/index';
+//
+$route['catalog/(:num)'] = 'catalogs/$1';
+
 
 
 //Carts

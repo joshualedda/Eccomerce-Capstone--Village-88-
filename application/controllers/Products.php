@@ -58,7 +58,7 @@ class Products extends CI_Controller
 			redirect($previous_url);
 		}
 	}
-	
+
 
 	public function create()
 	{
@@ -82,18 +82,18 @@ class Products extends CI_Controller
 		if ($result['success']) {
 			if ($this->input->is_ajax_request()) {
 				echo json_encode(array('success' => true, 'message' => 'Product Created Succesfully'));
-			} else { 
+			} else {
 				$this->session->set_flashdata('success_message', 'Product Created Succesfully');
 				redirect('products/create');
 			}
 		} else {
 			if ($this->input->is_ajax_request()) {
 				echo json_encode(array('success' => false, 'message' => $result['error']));
-			} else { 
+			} else {
 				$data['error_message'] = $result['error'];
 				$this->create();
+			}
 		}
-	}
 
 	}
 
@@ -119,6 +119,7 @@ class Products extends CI_Controller
 		$this->load->view('partials/header');
 		$this->load->view('partials/navbar');
 		$this->load->view('partials/sidebar');
+		$this->load->view('partials/toast');
 		$this->load->view('admin/products/edit', $data);
 		$this->load->view('partials/footer');
 	}
@@ -127,33 +128,73 @@ class Products extends CI_Controller
 	public function update($productId)
 	{
 
-		if ($this->Product->checkImageLimit($productId)) {
+		if ($this->Product->checkImageLimit($productId, 5)) {
 			$this->session->set_flashdata('error_message', 'Maximum 5 images allowed.');
 			redirect('products/edit/' . $productId);
 		}
 
 		$result = $this->Product->updateProduct($productId);
 
+
+
 		if ($result['success']) {
-			$this->session->set_flashdata('success_message', 'Product Updated Succesfully');
-			redirect('products/edit/' . $productId);
+			if ($this->input->is_ajax_request()) {
+				echo json_encode(array('success' => true, 'message' => 'Category Updated Succesfully'));
+			} else {
+				$this->session->set_flashdata('success_message', 'Product Updated Succesfully');
+				redirect('products/edit/' . $productId);
+			}
 		} else {
-			$data['error_message'] = $result['error'];
-			$this->edit($productId);
+			if ($this->input->is_ajax_request()) {
+				echo json_encode(array('success' => false, 'message' => $result['error']));
+			} else {
+				$data['error_message'] = $result['error'];
+				$this->edit($productId);
+			}
+
 		}
+
 	}
 
 	public function deleteImage($imageId)
 	{
 		$result = $this->Product->deleteProductImage($imageId);
-	
+
 		if ($result['success']) {
-			$this->session->set_flashdata('success_message', 'Product Image Deleted Successfully');
-	
+			if ($this->input->is_ajax_request()) {
+				echo json_encode(array('success' => true, 'message' => 'Deleted Successfully'));
+			} else {
+				$this->session->set_flashdata('success_message', 'Deleted Successfully');
+				redirect($_SERVER['HTTP_REFERER']);
+			}
 		} else {
-			$data['error_message'] = $result['error'];
-	
+			if ($this->input->is_ajax_request()) {
+				echo json_encode(array('success' => false, 'message' => $result['error']));
+			} else {
+				$data['error_message'] = $result['error'];
+				redirect($_SERVER['HTTP_REFERER']);
+
+			}
 		}
 	}
-	
+	//update main images
+	public function updateMainImage($imageId)
+	{
+		if (!$this->input->is_ajax_request()) {
+			show_404();
+		}
+
+		$mainStatus = $this->input->post('main_status');
+
+		$result = $this->Product->updateMainImage($imageId, $mainStatus);
+
+		if ($result) {
+			echo json_encode(['success' => true]);
+		} else {
+			echo json_encode(['success' => false, 'error' => 'Failed to update main image status']);
+		}
+	}
+
+
+
 }

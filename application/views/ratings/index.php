@@ -28,7 +28,7 @@
 						<span class="selling-price">$ <?= $product['price'] ?></span>
 					</div>
 
-					<form class="addToCartForm" action="<?= base_url('catalogs/addToCart') ?>" method="POST">
+					<form   action="<?= base_url('catalogs/addToCart') ?>" method="POST">
 						<div class="mt-2">
 							<div class="input-group">
 								<span class="btn btn1 decrease-quantity"><i class="fa fa-minus"></i></span>
@@ -42,7 +42,6 @@
 						<input type="hidden" name="product_id" value="<?= $product['id'] ?>" />
 						<div class="mt-2">
 							<input type="submit" class="btn btn1 addToCartBtn" value="Add To Cart" />
-							<a href="" class="btn btn1"> <i class="fa fa-heart"></i> Add To Wishlist </a>
 						</div>
 					</form>
 
@@ -62,11 +61,9 @@
 
 
 
-		<div class="card">
-			<div class="card-body">
+	
 				<div class="row">
-					<div class="col-md-12">
-						<p><strong><?= $user['name']  ?></strong></p>
+					<div class="col-md-12" id="ratingsReviews">
 
 						<?php if ($ratings) : ?>
 							<div>
@@ -103,7 +100,7 @@
 					<div class="row">
 						<div class="col-md-12">
 							<p><strong><?= $user['name']  ?></strong></p>
-							<form action="<?= base_url('ratings/rate/' . $product['id']) ?>" method="POST">
+							<form id="rateProductForm" action="<?= base_url('ratings/rate/' . $product['id']) ?>" method="POST">
 								<div>
 
 
@@ -149,3 +146,4 @@
 
 		</div>
 	</div>
+

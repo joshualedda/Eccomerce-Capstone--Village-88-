@@ -1,4 +1,7 @@
-<script src="<?=base_url('assets/js/index.js') ?>"></script>
+<script src="<?=base_url('assets/js/reply') ?>"></script>
+<script src="<?=base_url('assets/js/ratings') ?>"></script>
+<script src="<?=base_url('assets/js/editProduct') ?>"></script>
+<script src="<?=base_url('assets/js/index') ?>"></script>
 <script src="<?=base_url('assets/js/catalogs') ?>"></script>
 <script src="<?=base_url('assets/js/cart') ?>"></script>
 <script src="<?=base_url('assets/js/product') ?>"></script>

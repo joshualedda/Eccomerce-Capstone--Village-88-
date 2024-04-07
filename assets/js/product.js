@@ -39,9 +39,8 @@ $(document).ready(function () {
 			}
 		});
 
-		// Event delegation for dynamically created delete buttons
 		$("#imagePreview").on("click", ".delete-image", function () {
-			$(this).closest(".col-md-4").remove(); // Remove the closest parent with class "col-md-4"
+			$(this).closest(".col-md-4").remove(); 
 		});
 
 		$(document).on("change", ".main-image-checkbox", function () {

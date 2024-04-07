@@ -99,19 +99,29 @@
 													class="img-thumbnail" style="max-width: 100px;">
 											</a>
 											<div class="my-2">
-												<button type="button" class="remove-image ml-1 btn btn-danger btn-sm"
-													data-image="<?= $image['id']; ?>">Remove</button>
+												<div>
+													<button type="button" class="remove-image ml-1 btn btn-danger btn-sm"
+														data-image="<?= $image['id']; ?>">Remove</button>
+												</div>
+												<div class="form-check form-check-inline text-center">
+													<input class="form-check-input set-main-image" type="checkbox"
+														name="main_image" value="<?= $image['id']; ?>" <?php if ($image['main'] == 1)
+															  echo 'checked'; ?>>
+													<label class="form-check-label" for="setMainImage<?= $image['id']; ?>">Main
+														Image</label>
+												</div>
 											</div>
-																		
 										</div>
 									<?php endforeach; ?>
 								<?php endif; ?>
 							</div>
+
+
 							<?php if (empty($images)): ?>
 								<p>No Images Available</p>
 							<?php endif; ?>
 						</div>
-					
+
 
 						<div class="text-end">
 							<input id="updateProduct" type="submit" name="submit" value="Update Product"
@@ -129,24 +139,6 @@
 	</div>
 
 </main>
-
 <script>
-	$(document).ready(function () {
-		$('#imagePreviewContainer').on('click', '.remove-image', function () {
-			var $removeBtn = $(this);
-			var imageId = $removeBtn.data('image');
-
-			$.ajax({
-				type: 'POST',
-				url: '<?= base_url('products/deleteImage'); ?>/' + imageId,
-				success: function (response) {
-					$removeBtn.closest('.image-container').remove();
-				},
-				error: function (xhr, status, error) {
-					console.log(error);
-				}
-			});
-		});
-
-	});
+	var baseUrl = '<?= base_url(); ?>';
 </script>

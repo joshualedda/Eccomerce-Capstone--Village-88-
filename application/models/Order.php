@@ -160,6 +160,9 @@ class Order extends CI_Model
 				$insertSuccess = false;
 				break;
 			}
+			$sqlDeleteCart = "DELETE FROM carts WHERE product_id = ?";		
+			$queryDeleteCart = $this->db->query($sqlDeleteCart, array($productId));
+
 		}
 
 		if ($insertSuccess) {

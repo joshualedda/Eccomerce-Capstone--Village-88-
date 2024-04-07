@@ -15,34 +15,6 @@ $(document).ready(function () {
         }
     });
 	
-	$(".addToCartForm").submit(function (e) {
-		e.preventDefault();
-		var formData = new FormData($(this)[0]);
-		$.ajax({
-			type: "POST",
-			url: $(this).attr("action"),
-			data: formData,
-			processData: false,
-			contentType: false,
-			dataType: "json", 
-			success: function (response) {
-				if (response.success) {
-					updateCartTotal();
-					$("#message").html(response.message);
-					$("#liveToast").removeClass("hide");
-					$(".toast").toast("show");
-				} else {
-					$("#message").html(response.message);
-					$("#liveToast").removeClass("hide");
-					$(".toast").toast("show");
-				}
-			},
-			error: function (xhr, status, error) {
-				console.error("Error adding product to cart. Please try againdsadas.");
-			},
-		});
-	});
-
 	function updateCartTotal() {
 		$.ajax({
 			type: "GET",
@@ -55,6 +27,37 @@ $(document).ready(function () {
 			},
 		});
 	}
+	
+	$(document).ready(function () {
+		$(".addToCartForm").submit(function (e) {
+			e.preventDefault();
+			var formData = new FormData($(this)[0]);
+			$.ajax({
+				type: "POST",
+				url: $(this).attr("action"),
+				data: formData,
+				processData: false,
+				contentType: false,
+				dataType: "json",
+				success: function (response) {
+					if (response.success) {
+						updateCartTotal();
+						$("#message").html(response.message);
+						$("#liveToast").removeClass("hide");
+						$(".toast").toast("show");
+					} else {
+						$("#message").html(response.message);
+						$("#liveToast").removeClass("hide");
+						$(".toast").toast("show");
+					}
+				},
+				error: function (xhr, status, error) {
+					console.error("Error adding product to cart. Please try again.");
+				},
+			});
+		});
+	});
+	
 
 	//Search
 	$('#filterCatalogs input[name="name"], #filterCatalogs select[name="category"], #filterCatalogs input[name="price_order"]'

@@ -91,22 +91,4 @@
 <?php endif; ?>
 
 </main>
-<script>
-	$(document).ready(function() {
-		$('#filterCatalogs input[name="name"]').on('input change', function() {
-			var formData = $('#filterCatalogs').serialize();
-			$.ajax({
-				url: $('#filterCatalogs').attr('action'), 
-				type: 'POST',
-				data: formData,
-				success: function(response) {
-					$('#categoriesData tbody').html(response);
-				},
-				error: function(xhr, status, error) {
-					console.log(error);
-				}
-			});
-		});
-	});
-</script>
-
+<!-- the script is in the category -->

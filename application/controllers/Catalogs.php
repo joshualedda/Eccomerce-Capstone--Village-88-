@@ -30,6 +30,7 @@ class Catalogs extends CI_Controller
 			$data['categories'] = $this->Category->getCategories();
 
 			$this->prepareUserData();
+			$this->data['cartsTotal'] = $this->Cart->countCarts();
 			$this->load->view('partials/header', $this->data);
 			$this->load->view('partials/menu', $this->data);
 			$this->load->view('partials/alert', $this->data);

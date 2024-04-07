@@ -39,7 +39,7 @@
 
 					</div>
 
-					<form class="addToCartForm" action="<?= base_url('catalogs/addToCart') ?>" method="POST">
+					<form class="addToCartFormView" action="<?= base_url('catalogs/addToCart') ?>" method="POST">
 						<div class="mt-2">
 							<div class="input-group">
 								<span class="btn btn1 decrease-quantity"><i class="fa fa-minus"></i></span>
@@ -54,7 +54,6 @@
 						<input type="hidden" name="product_id" value="<?= $product['id'] ?>" />
 						<div class="mt-2">
 							<input type="submit" class="btn btn1 addToCartBtn" value="Add To Cart" />
-							<!-- <a href="" class="btn btn1"> <i class="fa fa-heart"></i> Add To Wishlist </a> -->
 						</div>
 					</form>
 
@@ -107,42 +106,42 @@
 
 
 
+<div id="repliesData">
 
-				<?php if (isset($rating['replies']) && !empty($rating['replies'])): ?>
-					<?php foreach ($rating['replies'] as $reply): ?>
-						<div class="form-group mx-5">
-							<h6 class="my-2">Replies</h6>
-							<label for="reply" class="form-label">
-								<?= $reply['UserName'] ?? " " ?> | <span>
+	<?php if (isset($rating['replies']) && !empty($rating['replies'])): ?>
+		<?php foreach ($rating['replies'] as $reply): ?>
+			<div class="form-group mx-5">
+				<h6 class="my-2">Replies</h6>
+				<label for="reply" class="form-label">
+					<?= $reply['UserName'] ?? " " ?> | <span>
 									<?= date('F j, Y H:i:s', strtotime($reply['replyCreated'])) ?>
 								</span>
 							</label>
 							<textarea disabled class="form-control" rows="3"><?= $reply['replyComment'] ?></textarea>
 						</div>
 					<?php endforeach; ?>
-				<?php else: ?>
-					<div class="card-body">
-						<p class="card-text">No replies yet.</p>
-					</div>
-				<?php endif; ?>
+					<?php else: ?>
+						<div class="card-body">
+							<p class="card-text">No replies yet.</p>
+						</div>
+						<?php endif; ?>
+</div>
 
 
 
 
 
+	<form id="createReplyForm" action="<?= base_url('replies/reply/' . $product['id']) ?>" method="POST">
+	<input type="hidden" name="rating_id" value="<?=$rating['ratingId'] ?>">
+    <textarea placeholder="POST A REPLY" name="reply" class="form-control mx-4 mt-3" rows="3"></textarea>
+    <span class="error text-sm text-danger">
+        <?= form_error('reply') ?>
+    </span>
+    <div class="text-end">
+        <input type="submit" name="submit" class="btn btn-success my-2" value="Reply">
+    </div>
+</form>
 
-				<form action="<?= base_url('replies/reply') ?>" method="POST">
-					<input type="hidden" name="review_id" value="<?= $rating['ratingId'] ?>">
-
-					<textarea placeholder="POST A REPLY" name="reply" class="form-control mx-4 mt-3" rows="3"></textarea>
-					<span class="error text-sm text-danger">
-						<?= form_error('reply') ?>
-					</span>
-
-					<div class="text-end">
-						<input type="submit" name="submit" class="btn btn-success my-2" value="Reply">
-					</div>
-				</form>
 
 
 
@@ -204,3 +203,49 @@
 		</div>
 	</div>
 </div>
+
+<script>
+$(document).ready(function () {
+
+	$(".addToCartFormView").submit(function (e) {
+		e.preventDefault();
+		var formData = new FormData($(this)[0]);
+		$.ajax({
+			type: "POST",
+			url: $(this).attr("action"),
+			data: formData,
+			processData: false,
+			contentType: false,
+			dataType: "json", 
+			success: function (response) {
+				if (response.success) {
+					updateCartTotal();
+					$("#message").html(response.message);
+					$("#liveToast").removeClass("hide");
+					$(".toast").toast("show");
+				} else {
+					$("#message").html(response.message);
+					$("#liveToast").removeClass("hide");
+					$(".toast").toast("show");
+				}
+			},
+			error: function (xhr, status, error) {
+				console.error("Error adding product to cart. Please try againdsadas.");
+			},
+		});
+	});
+
+	function updateCartTotal() {
+		$.ajax({
+			type: "GET",
+			url: "carts/getCartTotal",
+			success: function (cartTotal) {
+				$("#cartTotal").text(cartTotal);
+			},
+			error: function (xhr, status, error) {
+				console.error(error);
+			},
+		});
+	}
+});
+</script>
