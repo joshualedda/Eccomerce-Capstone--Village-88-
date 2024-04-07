@@ -138,9 +138,5 @@ $(document).ready(function () {
 		return isValid;
 	}
 
-	//Product Edit
-
-
-
 
 });

@@ -40,27 +40,4 @@ $(document).ready(function () {
 		});
 	});
 
-	//update product
-	$("#updateProduct").submit(function (e) {
-		e.preventDefault();
-		var formData = new FormData(this);
-		$.ajax({
-			url: $(this).attr("action"),
-			type: "POST",
-			data: formData,
-			processData: false,
-			contentType: false,
-			success: function (response) {
-				$("#message").html("Product Updatedd Successfully");
-				$("#liveToast").removeClass("hide");
-				$(".toast").toast("show");
-				$("#createProduct")[0].reset();
-				$(".error-message").text("");
-				$("#imagePreview").empty();
-			},
-			error: function (xhr, status, error) {
-				console.error(xhr.responseText);
-			},
-		});
-	});
 });

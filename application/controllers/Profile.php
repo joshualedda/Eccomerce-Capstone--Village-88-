@@ -47,8 +47,6 @@ class Profile extends CI_Controller
 	public function userProfile()
 	{
 		$data = $this->prepareUserData();
-		$data = $this->redirectIfUnauthorized();
-
 		$this->load->view('partials/header');
 		$this->load->view('partials/menu', $this->data); 
 		$this->load->view('partials/alert');

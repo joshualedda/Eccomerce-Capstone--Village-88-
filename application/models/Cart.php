@@ -30,7 +30,7 @@ class Cart extends CI_Model
 	}
 
 	// Total Amount
-	public function getTotalCartAmount()
+	public function getTotalItemAmount()
 	{
     $userId = $this->session->userdata('id');
     $sql = "SELECT 
@@ -46,6 +46,22 @@ class Cart extends CI_Model
 	}
 
 
+	public function getTotalCartAmount()
+	{
+		$userId = $this->session->userdata('id');
+		$sql = "SELECT 
+					SUM(products.price * carts.quantity) AS totalCartAmount
+				FROM carts
+				LEFT JOIN products ON carts.product_id = products.id
+				WHERE carts.user_id = ?";
+	
+		$query = $this->db->query($sql, array($userId));
+		$row = $query->row_array();
+	
+		$totalCartAmount = !empty($row['totalCartAmount']) ? $row['totalCartAmount'] + 20 : 20;
+	
+		return $totalCartAmount;
+	}
 
 	public function countCarts()
 	{
@@ -60,13 +76,20 @@ class Cart extends CI_Model
 	}
 
 	public function updateCartQuantity()
-	{
-		$cartId = $this->input->post('cart_id');
-		$quantity = $this->input->post('quantity');  
+{
+    $cartId = $this->input->post('cart_id');
+    $quantity = $this->input->post('quantity');  
 
-		$sql = "UPDATE carts SET quantity = ? WHERE id = ?";
-		$this->db->query($sql, array($quantity, $cartId));
-	}
+    $sql = "UPDATE carts SET quantity = ? WHERE id = ?";
+    $success = $this->db->query($sql, array($quantity, $cartId));
+
+    if ($success) {
+        return array('success' => true, 'message' => 'Quantity updated successfully');
+    } else {
+        return array('success' => false, 'message' => 'Failed to update quantity');
+    }
+}
+
 
 	public function removeCart()
 	{

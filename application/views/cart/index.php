@@ -52,8 +52,10 @@
 											</span>
 										</a>
 									</div>
+
+
 									<div class="col-md-2 my-auto">
-										<span class="price text-dark">
+										<span class="price text-dark" data-price="<?= $cart['productPrice'] ?>">
 											<?= $cart['productPrice'] ?>
 										</span>
 									</div>
@@ -70,11 +72,12 @@
 									</div>
 
 									<div class="col-md-2 my-auto">
-										Total: $<span id="totalAmount_<?= $cart['cartId'] ?>" class="price text-dark"
-											data-price="<?= $cart['totalPrice'] ?>" data-cartid="<?= $cart['cartId'] ?>">
+										<span id="totalPrice_<?= $cart['cartId'] ?>" data-price="<?= $cart['productPrice'] ?>">
+											Total: $
 											<?= $cart['totalPrice'] ?>
 										</span>
 									</div>
+
 
 
 									<div class="col-md-2 col-5 my-auto">
@@ -117,45 +120,45 @@
 										<label for="inputFirstName" class="form-label">First Name</label>
 										<input type="text" class="form-control" id="firstNameShipping"
 											name="firstNameShipping">
-										<span id="firstNameShipValid"></span>
+										<span class="text-sm text-danger" id="firstNameShipValid"></span>
 									</div>
 									<div class="col-md-12">
 										<label for="inputLastName" class="form-label">Last Name</label>
 										<input type="text" class="form-control" id="lastNameShipping"
 											name="lastNameShipping">
-											<span id="lastNameShippingValid"></span>
+										<span class="text-sm text-danger" id="lastNameShippingValid"></span>
 									</div>
 									<div class="col-md-12">
 										<label for="inputPassword5" class="form-label">Address 1</label>
 										<input type="text" class="form-control" id="address1Shipping"
 											name="address1Shipping">
-											<span id="address1ShippingValid"></span>
+										<span class="text-sm text-danger" id="address1ShippingValid"></span>
 
 									</div>
 									<div class="col-md-12">
 										<label for="inputAddress5" class="form-label">Address 2</label>
 										<input type="text" class="form-control" id="address2Shipping"
 											name="address2Shipping">
-											<span id="address2ShippingValid"></span>
+										<span class="text-sm text-danger" id="address2ShippingValid"></span>
 
 									</div>
 									<div class="col-md-4">
 										<label for="inputAddress2" class="form-label">City</label>
 										<input type="text" class="form-control" id="cityShipping" name="cityShipping">
-										<span id="cityShippingValid"></span>
+										<span class="text-sm text-danger" id="cityShippingValid"></span>
 
 									</div>
 
 									<div class="col-md-4">
 										<label for="inputAddress2" class="form-label">State </label>
 										<input type="text" class="form-control" id="stateShipping" name="stateShipping">
-										<span id="stateShippingValid"></span>
-										
+										<span class="text-sm text-danger" id="stateShippingValid"></span>
+
 									</div>
 									<div class="col-md-4">
 										<label for="inputAddress2" class="form-label">Zip</label>
 										<input type="text" class="form-control" id="zipShipping" name="zipShipping">
-										<span id="zipShippingValid"></span>
+										<span class="text-sm text-danger" id="zipShippingValid"></span>
 
 									</div>
 								</div>
@@ -199,15 +202,16 @@
 									<div>
 										<p class="fw-bold">Order Summary</p>
 										<p class="fw-bold">Items</p>
+										<p class="fw-bold">Shipping Fee</p>
 										<p class="fw-bold">Total Amount</p>
 									</div>
 									<div>
 										<p>&nbsp;</p>
-										<p id="totalItemAmount" class="fw-bold">$
-											<?= !empty($totalCartAmount) ? $totalCartAmount : '0.00' ?>
+										<p id="totalItemAmountCart" class="fw-bold">$
+											<?= !empty($totalItemAmount) ? $totalItemAmount : '0.00' ?>
 										</p>
-
-										<p id="totalItemAmount" class="fw-bold">$
+										<p class="fw-bold">$20</p>
+										<p id="totalItemAmountSummayyy" class="fw-bold">$
 											<?= !empty($totalCartAmount) ? $totalCartAmount : '0.00' ?>
 										</p>
 									</div>
@@ -305,83 +309,85 @@
 </div>
 
 <script>
-    $(document).ready(function() {
-        function validateShippingInfo() {
-            var firstNameShipping = $('#firstNameShipping').val().trim();
-            var lastNameShipping = $('#lastNameShipping').val().trim();
-            var address1Shipping = $('#address1Shipping').val().trim();
-            var cityShipping = $('#cityShipping').val().trim();
-            var stateShipping = $('#stateShipping').val().trim();
-            var zipShipping = $('#zipShipping').val().trim();
 
-            var isValid = true;
+</script>
+<script>
+	$(document).ready(function () {
+		function validateShippingInfo() {
+			var firstNameShipping = $('#firstNameShipping').val().trim();
+			var lastNameShipping = $('#lastNameShipping').val().trim();
+			var address1Shipping = $('#address1Shipping').val().trim();
+			var cityShipping = $('#cityShipping').val().trim();
+			var stateShipping = $('#stateShipping').val().trim();
+			var zipShipping = $('#zipShipping').val().trim();
 
-            if (firstNameShipping === '') {
-                $('#firstNameShipValid').show().text('First name is required.');
-                isValid = false;
-            } else {
-                $('#firstNameShipValid').hide().text('');
-            }
+			var isValid = true;
 
-            if (lastNameShipping === '') {
-                $('#lastNameShippingValid').show().text('Last name is required.');
-                isValid = false;
-            } else {
-                $('#lastNameShippingValid').hide().text('');
-            }
+			if (firstNameShipping === '') {
+				$('#firstNameShipValid').show().text('First name is required.');
+				isValid = false;
+			} else {
+				$('#firstNameShipValid').hide().text('');
+			}
 
-            if (address1Shipping === '') {
-                $('#address1ShippingValid').show().text('Address 1 is required.');
-                isValid = false;
-            } else {
-                $('#address1ShippingValid').hide().text('');
-            }
+			if (lastNameShipping === '') {
+				$('#lastNameShippingValid').show().text('Last name is required.');
+				isValid = false;
+			} else {
+				$('#lastNameShippingValid').hide().text('');
+			}
 
-            if (cityShipping === '') {
-                $('#cityShippingValid').show().text('City is required.');
-                isValid = false;
-            } else {
-                $('#cityShippingValid').hide().text('');
-            }
+			if (address1Shipping === '') {
+				$('#address1ShippingValid').show().text('Address 1 is required.');
+				isValid = false;
+			} else {
+				$('#address1ShippingValid').hide().text('');
+			}
 
-            if (stateShipping === '') {
-                $('#stateShippingValid').show().text('State is required.');
-                isValid = false;
-            } else {
-                $('#stateShippingValid').hide().text('');
-            }
+			if (cityShipping === '') {
+				$('#cityShippingValid').show().text('City is required.');
+				isValid = false;
+			} else {
+				$('#cityShippingValid').hide().text('');
+			}
 
-            if (zipShipping === '') {
-                $('#zipShippingValid').show().text('ZIP code is required.');
-                isValid = false;
-            } else {
-                $('#zipShippingValid').hide().text('');
-            }
+			if (stateShipping === '') {
+				$('#stateShippingValid').show().text('State is required.');
+				isValid = false;
+			} else {
+				$('#stateShippingValid').hide().text('');
+			}
 
-            return isValid;
-        }
+			if (zipShipping === '') {
+				$('#zipShippingValid').show().text('ZIP code is required.');
+				isValid = false;
+			} else {
+				$('#zipShippingValid').hide().text('');
+			}
+
+			return isValid;
+		}
 
 		function updateCheckoutButton() {
-    var isValid = validateShippingInfo();
-    $('#checkoutBtn').prop('disabled', !isValid);
-}
+			var isValid = validateShippingInfo();
+			$('#checkoutBtn').prop('disabled', !isValid);
+		}
 
 
-        $('#firstNameShipping, #lastNameShipping, #address1Shipping, #cityShipping, #stateShipping, #zipShipping').on('input', function() {
-            validateShippingInfo();
-            updateCheckoutButton();
-        });
+		$('#firstNameShipping, #lastNameShipping, #address1Shipping, #cityShipping, #stateShipping, #zipShipping').on('input', function () {
+			validateShippingInfo();
+			updateCheckoutButton();
+		});
 
-        $('#paymentForm').submit(function(event) {
-            event.preventDefault();
+		$('#paymentForm').submit(function (event) {
+			event.preventDefault();
 
-            var isValid = validateShippingInfo();
+			var isValid = validateShippingInfo();
 
-            if (isValid) {
-                $('#exampleModal').modal('hide'); 
-                this.submit(); 
-            }
-        });
-    });
+			if (isValid) {
+				$('#exampleModal').modal('hide');
+				this.submit();
+			}
+		});
+	});
 </script>
-

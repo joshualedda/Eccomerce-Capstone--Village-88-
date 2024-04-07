@@ -23,6 +23,7 @@ class Users extends CI_Controller
 			redirect('catalogs');
 		}
 		$this->load->view('partials/header');
+		$this->load->view('partials/alert');
 		$this->load->view('auth/register');
 		$this->load->view('partials/footer');
 	}

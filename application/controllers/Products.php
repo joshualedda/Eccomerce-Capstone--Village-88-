@@ -16,7 +16,7 @@ class Products extends CI_Controller
 		if ($this->input->is_ajax_request()) {
 			$name = $this->input->post('name');
 			$category = $this->input->post('category');
-			$data['products'] = $this->Product->filterProducts($name, $category);
+			$data['products'] = $this->Product->filterProducts($name, $category, $recordsPerPage, $offset);
 			$this->load->view('components/productsTable', $data);
 		} else {
 
@@ -124,37 +124,28 @@ class Products extends CI_Controller
 		$this->load->view('partials/footer');
 	}
 
-
 	public function update($productId)
 	{
-
-		if ($this->Product->checkImageLimit($productId, 5)) {
-			$this->session->set_flashdata('error_message', 'Maximum 5 images allowed.');
-			redirect('products/edit/' . $productId);
-		}
-
+	
 		$result = $this->Product->updateProduct($productId);
-
-
-
-		if ($result['success']) {
+	
+		if (isset($result['success']) && $result['success']) {
 			if ($this->input->is_ajax_request()) {
-				echo json_encode(array('success' => true, 'message' => 'Category Updated Succesfully'));
+				echo json_encode(array('success' => true, 'message' => 'Product Updated Successfully'));
 			} else {
-				$this->session->set_flashdata('success_message', 'Product Updated Succesfully');
+				$this->session->set_flashdata('success_message', 'Product Updated Successfully');
 				redirect('products/edit/' . $productId);
 			}
 		} else {
 			if ($this->input->is_ajax_request()) {
-				echo json_encode(array('success' => false, 'message' => $result['error']));
+				echo json_encode(array('success' => false, 'message' => isset($result['error']) ? $result['error'] : 'Unknown error occurred'));
 			} else {
-				$data['error_message'] = $result['error'];
+				$data['error_message'] = isset($result['error']) ? $result['error'] : 'Unknown error occurred';
 				$this->edit($productId);
 			}
-
 		}
-
 	}
+	
 
 	public function deleteImage($imageId)
 	{

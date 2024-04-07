@@ -130,6 +130,8 @@ class Order extends CI_Model
 			$productId = $item['product_id'];
 			$quantity = $item['quantity'];
 			$totalAmount = $item['price'] * $quantity;
+			$totalAmount += 20;
+
 
 			$sqlShipping = "INSERT INTO shippings (first_name, last_name, main_address, secondary_address, city, state, zip) VALUES (?, ?, ?, ?, ?, ?, ?)";
 			$queryShipping = $this->db->query($sqlShipping, array($firstNameShipping, $lastNameShipping, $address1Shipping, $address2Shipping, $cityShipping, $stateShipping, $zipShipping));

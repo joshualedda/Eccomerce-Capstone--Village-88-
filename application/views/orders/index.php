@@ -1,4 +1,5 @@
 <main id="main" class="main">
+<?php if (isset($is_logged_in) && $is_logged_in) : ?>
 	<div class="pagetitle">
 		<h1 class="text-dark">Orders</h1>
 		<nav class="my-2">
@@ -235,4 +236,7 @@
 		</div>
 	</div>
 
+	<?php else : ?>
+		<p>Login first to access track your orders</p>
+	<?php endif; ?>
 </main>

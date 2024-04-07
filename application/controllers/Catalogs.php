@@ -5,7 +5,7 @@ class Catalogs extends CI_Controller
 {
 	public function index()
 	{
-		$recordsPerPage = 5;
+		$recordsPerPage = 8;
 		$currentPage = isset($_GET['page']) ? $_GET['page'] : 1;
 		$offset = ($currentPage - 1) * $recordsPerPage;
 

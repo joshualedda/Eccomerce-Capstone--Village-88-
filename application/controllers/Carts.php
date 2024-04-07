@@ -8,6 +8,7 @@ class Carts extends CI_Controller
 		$data['carts'] = $this->Cart->getCarts();
 		$this->prepareUserData();
 		$data['totalCartAmount'] = $this->Cart->getTotalCartAmount();
+		$data['totalItemAmount'] = $this->Cart->getTotalItemAmount();
 		$data['title'] = 'Carts';
 		$this->load->view('partials/header', $data);
 		$this->load->view('partials/menu', $this->data);
@@ -38,9 +39,9 @@ class Carts extends CI_Controller
 		$result = $this->Cart->updateCartQuantity();
 		if ($result['success']) {
 			if ($this->input->is_ajax_request()) {
-				echo json_encode(array('success' => true, 'message' => 'Added Succefully'));
+				echo json_encode(array('success' => true, 'message' => 'Updated Successfully'));
 			} else {
-				$this->session->set_flashdata('success_message', 'Added Successfully');
+				$this->session->set_flashdata('success_message', 'Updated Successfully');
 				redirect('carts');
 			}
 		} else {
@@ -52,6 +53,7 @@ class Carts extends CI_Controller
 			}
 		}
 	}
+	
 
 	public function removeCartItem()
 	{

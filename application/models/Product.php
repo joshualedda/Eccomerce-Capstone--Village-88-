@@ -18,16 +18,47 @@ class Product extends CI_Model
 		return $query->result_array();
 	}
 	public function getProductsPaginated($limit, $offset)
-	{
-		$sql = "SELECT products.id AS productId, products.*, categories.*
-            FROM products
-            LEFT JOIN categories ON categories.id = products.category_id
-            ORDER BY products.created_at DESC
+{
+    $sql = "SELECT 
+                products.id AS productId, 
+                products.name, 
+                products.description, 
+                products.price, 
+                products.stocks, 
+                categories.category AS categoryName,
+                COALESCE((SELECT SUM(total_item) FROM orders WHERE product_id = products.id), 0) AS total_sold,
+                COALESCE(images.image, '') AS main_image_url
+            FROM 
+                products
+            LEFT JOIN 
+                categories ON categories.id = products.category_id
+            LEFT JOIN 
+                images ON images.product_id = products.id AND images.main = 1
+            ORDER BY 
+                products.stocks DESC
             LIMIT ?, ?";
 
-		$query = $this->db->query($sql, array($offset, $limit));
-		return $query->result_array();
-	}
+    $query = $this->db->query($sql, array($offset, $limit));
+    $results = $query->result_array();
+
+    foreach ($results as &$result) {
+        if (empty($result['main_image_url'])) {
+            $newestImageQuery = "SELECT image
+                                  FROM images
+                                  WHERE product_id = ?
+                                  ORDER BY created_at DESC
+                                  LIMIT 1";
+            $newestImageQueryResult = $this->db->query($newestImageQuery, array($result['productId']))->row_array();
+
+            $result['main_image_url'] = !empty($newestImageQueryResult) ? $newestImageQueryResult['image'] : '';
+        }
+    }
+
+    return $results;
+}
+
+
+	
 
 	//count procut
 
@@ -100,32 +131,66 @@ class Product extends CI_Model
 
 
 	//search functions
-	public function filterProducts($name, $categoryId)
-	{
-		$sql = "SELECT products.id AS productId, products.*, categories.*
-				FROM products
-				LEFT JOIN categories ON categories.id = products.category_id
-				WHERE 1";
+	public function filterProducts($name, $categoryId, $limit, $offset)
+{
+    $sql = "SELECT 
+                products.id AS productId, 
+                products.name, 
+                products.description, 
+                products.price, 
+                products.stocks, 
+                categories.category AS categoryName,
+                COALESCE((SELECT SUM(total_item) FROM orders WHERE product_id = products.id), 0) AS total_sold,
+                COALESCE(images.image, '') AS main_image_url
+            FROM 
+                products
+            LEFT JOIN 
+                categories ON categories.id = products.category_id
+            LEFT JOIN 
+                images ON images.product_id = products.id AND images.main = 1";
 
-		$params = [];
+    $params = [];
 
-		if (!empty($name)) {
-			$sql .= " AND (products.name LIKE ? OR products.price LIKE ? OR categories.category LIKE ?)";
-			$nameLike = "%$name%";
-			$params = array($nameLike, $nameLike, $nameLike);
-		}
+    if (!empty($name)) {
+        $sql .= " WHERE (products.name LIKE ? OR products.price LIKE ? OR categories.category LIKE ?)";
+        $nameLike = "%$name%";
+        $params = array($nameLike, $nameLike, $nameLike);
+    }
 
-		if (!empty($categoryId)) {
-			$sql .= " AND products.category_id = ?";
-			$params[] = $categoryId;
-		}
+    if (!empty($categoryId)) {
+        if (empty($params)) {
+            $sql .= " WHERE products.category_id = ?";
+        } else {
+            $sql .= " AND products.category_id = ?";
+        }
+        $params[] = $categoryId;
+    }
 
-		$sql .= " ORDER BY products.created_at DESC";
+    $sql .= " ORDER BY products.created_at DESC LIMIT ?, ?";
 
-		$query = $this->db->query($sql, $params);
+    $params[] = $offset;
+    $params[] = $limit;
 
-		return $query->result_array();
-	}
+    $query = $this->db->query($sql, $params);
+
+    $results = $query->result_array();
+
+    foreach ($results as &$result) {
+        if (empty($result['main_image_url'])) {
+            $newestImageQuery = "SELECT image
+                                  FROM images
+                                  WHERE product_id = ?
+                                  ORDER BY created_at DESC
+                                  LIMIT 1";
+            $newestImageQueryResult = $this->db->query($newestImageQuery, array($result['productId']))->row_array();
+
+            $result['main_image_url'] = !empty($newestImageQueryResult) ? $newestImageQueryResult['image'] : '';
+        }
+    }
+
+    return $results;
+}
+
 
 
 	//get single product
@@ -284,12 +349,10 @@ class Product extends CI_Model
 		$price = $this->security->xss_clean($this->input->post('price'));
 		$stocks = $this->security->xss_clean($this->input->post('stocks'));
 
-		// Update product information
 		$sql = "UPDATE products SET category_id = ?, name = ?, description = ?, price = ?, stocks = ? WHERE id = ?";
 		$query = $this->db->query($sql, array($category, $product, $description, $price, $stocks, $productId));
 
 		if ($query) {
-			// Upload and insert images only if the update is successful
 			$this->uploadAndInsertImages($productId);
 
 			return array('success' => true);

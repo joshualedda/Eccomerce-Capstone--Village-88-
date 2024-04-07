@@ -71,6 +71,8 @@
 												class="fa fa-shopping-cart"></i> My Cart</a></li>
 									<li><a class="dropdown-item" href="<?= base_url('logout') ?>"><i
 												class="fa fa-sign-out"></i> Logout</a></li>
+
+												
 								</ul>
 							</li>
 						</ul>

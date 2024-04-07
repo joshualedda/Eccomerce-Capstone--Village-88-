@@ -91,7 +91,6 @@ class Orders extends CI_Controller
 	public function viewOrders()
 	{
 		$this->prepareUserData();
-		$this->redirectIfUnauthorized();
 
 		$data['title'] = 'Track Order';
 		$data['pendings'] = $this->Order->pendingOrders();
