@@ -19,6 +19,7 @@ class Catalogs extends CI_Controller
 			$this->load->view('partials/footer');
 		} else {
 
+			//Pagination
 			$data['products'] = $this->getProductsWithRatings($recordsPerPage, $offset);
 			$totalCategories = $this->Product->countProducts();
 			$totalPages = ceil($totalCategories / $recordsPerPage);
@@ -92,6 +93,8 @@ class Catalogs extends CI_Controller
 
 	public function view($productId)
 	{
+		$data['images'] = $this->Product->getProductImagesView($productId);
+
 		$data['product'] = $this->Product->getProduct($productId);
 		$data['image'] = $this->Product->getProductMainImage($productId);
 

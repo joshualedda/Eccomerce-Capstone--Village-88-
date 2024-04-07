@@ -74,4 +74,13 @@ class Carts extends CI_Controller
 			}
 		}
 	}
+
+	public function updateTotalPrice() {
+		$cartId = $this->input->post('cartId');
+		$newQuantity = $this->input->post('newQuantity');
+		$newTotalPrice = $newQuantity * $this->Cart->getProductPrice($cartId);
+	
+		echo '$' . number_format($newTotalPrice, 2); 
+	}
+	
 }

@@ -62,14 +62,17 @@
 										<div class="quantity">
 											<div class="input-group">
 												<span class="btn btn1 quantity-decrease"><i class="fa fa-minus"></i></span>
-												<input type="text" value="<?= $cart['totalQuantity'] ?>" class="input-quantity" id="quantityInput_<?= $cart['cartId'] ?>" />
+												<input type="text" value="<?= $cart['totalQuantity'] ?>" class="input-quantity"
+													id="quantityInput_<?= $cart['cartId'] ?>" />
 												<span class="btn btn1 quantity-increase"><i class="fa fa-plus"></i></span>
 											</div>
 										</div>
 									</div>
 
 									<div class="col-md-2 my-auto">
-		Total: $<span id="totalAmount_<?= $cart['cartId'] ?>" class="price text-dark" data-price="<?= $cart['totalPrice'] ?>" data-cartid="<?= $cart['cartId'] ?>"><?= $cart['totalPrice'] ?>
+										Total: $<span id="totalAmount_<?= $cart['cartId'] ?>" class="price text-dark"
+											data-price="<?= $cart['totalPrice'] ?>" data-cartid="<?= $cart['cartId'] ?>">
+											<?= $cart['totalPrice'] ?>
 										</span>
 									</div>
 
@@ -98,7 +101,8 @@
 					<div class="card">
 						<div class="card-body">
 							<h6 class="card-title">Shipping Information</h6>
-							<form action="<?= base_url('orders/createOrder') ?>" method="POST" class="row g-3">
+							<form id="paymentForm" action="<?= base_url('orders/createOrder') ?>" method="POST"
+								class="row g-3">
 								<div class="col-md-12">
 									<div class="form-check">
 										<input class="form-check-input" type="checkbox" id="sameBillingCheckbox"
@@ -113,34 +117,46 @@
 										<label for="inputFirstName" class="form-label">First Name</label>
 										<input type="text" class="form-control" id="firstNameShipping"
 											name="firstNameShipping">
+										<span id="firstNameShipValid"></span>
 									</div>
 									<div class="col-md-12">
 										<label for="inputLastName" class="form-label">Last Name</label>
 										<input type="text" class="form-control" id="lastNameShipping"
 											name="lastNameShipping">
+											<span id="lastNameShippingValid"></span>
 									</div>
 									<div class="col-md-12">
 										<label for="inputPassword5" class="form-label">Address 1</label>
 										<input type="text" class="form-control" id="address1Shipping"
 											name="address1Shipping">
+											<span id="address1ShippingValid"></span>
+
 									</div>
 									<div class="col-md-12">
 										<label for="inputAddress5" class="form-label">Address 2</label>
 										<input type="text" class="form-control" id="address2Shipping"
 											name="address2Shipping">
+											<span id="address2ShippingValid"></span>
+
 									</div>
 									<div class="col-md-4">
 										<label for="inputAddress2" class="form-label">City</label>
 										<input type="text" class="form-control" id="cityShipping" name="cityShipping">
+										<span id="cityShippingValid"></span>
+
 									</div>
 
 									<div class="col-md-4">
 										<label for="inputAddress2" class="form-label">State </label>
 										<input type="text" class="form-control" id="stateShipping" name="stateShipping">
+										<span id="stateShippingValid"></span>
+										
 									</div>
 									<div class="col-md-4">
 										<label for="inputAddress2" class="form-label">Zip</label>
 										<input type="text" class="form-control" id="zipShipping" name="zipShipping">
+										<span id="zipShippingValid"></span>
+
 									</div>
 								</div>
 
@@ -197,32 +213,73 @@
 									</div>
 								</div>
 								<!-- Modal -->
+
 								<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
 									aria-hidden="true">
 									<div class="modal-dialog">
 										<div class="modal-content">
 											<div class="modal-header">
-												<h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+												<h5 class="modal-title" id="exampleModalLabel">Payment Details</h5>
 												<button type="button" class="btn-close" data-bs-dismiss="modal"
 													aria-label="Close"></button>
 											</div>
 											<div class="modal-body">
-												...
+												<div class="mb-3">
+													<label for="card_name" class="form-label">Card Name</label>
+													<input type="text" class="form-control" id="card_name" name="card_name">
+													<span class="text-sm text-danger" id="cardNameValid"></span>
+												</div>
+												<div class="mb-3">
+													<label for="card_number" class="form-label">Card Number</label>
+													<input type="text" class="form-control" id="card_number"
+														name="card_number">
+													<span class="text-sm text-danger" id="cardNumValid"></span>
+
+												</div>
+												<div class="row">
+													<div class="col-md-6 mb-3">
+														<label for="expiration" class="form-label">Expiration
+															Date</label>
+														<input type="month" class="form-control" id="expiration"
+															name="expiration">
+														<span class="text-sm text-danger" id="expData"></span>
+
+													</div>
+													<div class="col-md-6 mb-3">
+														<label for="cvc" class="form-label">CVC</label>
+														<input type="text" class="form-control" id="cvc" name="cvc">
+														<span class="text-sm text-danger" id="cvcValid"></span>
+
+													</div>
+												</div>
+												<h5>Total Amount: <span>$
+														<?= $cart['totalPrice'] ?? "0" ?>
+													</span></h5>
 											</div>
 											<div class="modal-footer">
 												<button type="button" class="btn btn-secondary"
 													data-bs-dismiss="modal">Close</button>
-												<input type="submit" class="btn btn-primary" value="Submit" />
+												<input type="submit" class="btn btn-primary" value="Pay" />
 											</div>
 										</div>
 									</div>
 								</div>
 
 
-								<button type="button" class="btn btn-success" data-bs-toggle="modal"
-									data-bs-target="#exampleModal">
-									Process To Checkout
-								</button>
+								<?php if (empty($carts)): ?>
+									<button type="button" class="btn btn-success" data-bs-toggle="modal"
+										data-bs-target="#exampleModal" disabled>
+										Process To Checkout
+									</button>
+								<?php else: ?>
+									<button id="checkoutBtn" type="button" class="btn btn-success" data-bs-toggle="modal"
+										data-bs-target="#exampleModal">
+										Process To Checkout
+									</button>
+								<?php endif; ?>
+
+
+
 							</form>
 
 
@@ -246,19 +303,85 @@
 </div>
 </div>
 </div>
+
 <script>
-	$(document).ready(function () {
-		if ($('#sameBillingCheckbox').is(':checked')) {
-			$('#billingForm').hide();
-		}
+    $(document).ready(function() {
+        function validateShippingInfo() {
+            var firstNameShipping = $('#firstNameShipping').val().trim();
+            var lastNameShipping = $('#lastNameShipping').val().trim();
+            var address1Shipping = $('#address1Shipping').val().trim();
+            var cityShipping = $('#cityShipping').val().trim();
+            var stateShipping = $('#stateShipping').val().trim();
+            var zipShipping = $('#zipShipping').val().trim();
 
-		$('#sameBillingCheckbox').on('change', function () {
-			if ($(this).is(':checked')) {
-				$('#billingForm').hide();
-			} else {
-				$('#billingForm').show();
-			}
-		});
+            var isValid = true;
 
-	});
+            if (firstNameShipping === '') {
+                $('#firstNameShipValid').show().text('First name is required.');
+                isValid = false;
+            } else {
+                $('#firstNameShipValid').hide().text('');
+            }
+
+            if (lastNameShipping === '') {
+                $('#lastNameShippingValid').show().text('Last name is required.');
+                isValid = false;
+            } else {
+                $('#lastNameShippingValid').hide().text('');
+            }
+
+            if (address1Shipping === '') {
+                $('#address1ShippingValid').show().text('Address 1 is required.');
+                isValid = false;
+            } else {
+                $('#address1ShippingValid').hide().text('');
+            }
+
+            if (cityShipping === '') {
+                $('#cityShippingValid').show().text('City is required.');
+                isValid = false;
+            } else {
+                $('#cityShippingValid').hide().text('');
+            }
+
+            if (stateShipping === '') {
+                $('#stateShippingValid').show().text('State is required.');
+                isValid = false;
+            } else {
+                $('#stateShippingValid').hide().text('');
+            }
+
+            if (zipShipping === '') {
+                $('#zipShippingValid').show().text('ZIP code is required.');
+                isValid = false;
+            } else {
+                $('#zipShippingValid').hide().text('');
+            }
+
+            return isValid;
+        }
+
+		function updateCheckoutButton() {
+    var isValid = validateShippingInfo();
+    $('#checkoutBtn').prop('disabled', !isValid);
+}
+
+
+        $('#firstNameShipping, #lastNameShipping, #address1Shipping, #cityShipping, #stateShipping, #zipShipping').on('input', function() {
+            validateShippingInfo();
+            updateCheckoutButton();
+        });
+
+        $('#paymentForm').submit(function(event) {
+            event.preventDefault();
+
+            var isValid = validateShippingInfo();
+
+            if (isValid) {
+                $('#exampleModal').modal('hide'); 
+                this.submit(); 
+            }
+        });
+    });
 </script>
+

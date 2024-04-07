@@ -5,14 +5,18 @@ class Dashboards extends CI_Controller
 {
 	public function index()
 	{
+		
 		$data['title'] = 'Dashboard';
 		$this->prepareUserData();
 		$this->redirectIfUnauthorized();
 
+        $data = $this->Order->getOrdersData();
+
+
 		$this->load->view('partials/header', $data);
 		$this->load->view('partials/navbar', $this->data);
 		$this->load->view('partials/sidebar');
-		$this->load->view('admin/dashboard');
+		$this->load->view('admin/dashboard', $data);
 		$this->load->view('partials/footer');
 	}
 
@@ -35,4 +39,27 @@ class Dashboards extends CI_Controller
 			redirect($previous_url);
 		}
 	}
+
+	public function fetchOrdersData() {
+		$data = $this->Order->getOrdersData();
+		$this->output->set_content_type('application/json')->set_output(json_encode($data));
+	}
+	
+	
+private function formatChartData($data) {
+    $formattedData = [];
+    // Initialize formatted data array
+    for ($month = 1; $month <= 12; $month++) {
+        $formattedData[$month] = [];
+        // Initialize data for each status
+        for ($status = 0; $status <= 5; $status++) {
+            $formattedData[$month][$status] = 0;
+        }
+    }
+    // Fill in actual data
+    foreach ($data as $row) {
+        $formattedData[$row['month']][$row['status']] = intval($row['total_orders']);
+    }
+    return $formattedData;
+}
 }

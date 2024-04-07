@@ -341,5 +341,23 @@ class Order extends CI_Model
     return $query->result_array();
 }
 
+//chart js
+public function getOrdersData() {
+    $query = $this->db->query("
+        SELECT
+            MONTH(created_at) AS month,
+            CAST(status AS UNSIGNED) AS status, -- Convert status to unsigned integer
+            COUNT(*) AS total_orders
+        FROM
+            orders
+        GROUP BY
+            MONTH(created_at), status
+    ");
+
+    return $query->result_array();
+}
+
+
+
 	
 }

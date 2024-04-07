@@ -94,5 +94,19 @@ class Cart extends CI_Model
 		$cartId = $this->input->post('cart_id');
 		$quantity = $this->input->post('quantity');  
 	}
+
+	 
+    public function getProductPrice($cartId) {
+        $this->db->select('price');
+        $this->db->where('cart_id', $cartId);
+        $query = $this->db->get('products');
+
+        if ($query->num_rows() > 0) {
+            $row = $query->row();
+            return $row->productPrice;
+        } else {
+            return 0; // If product price is not found, return 0 or handle error as needed
+        }
+    }
 	
 }

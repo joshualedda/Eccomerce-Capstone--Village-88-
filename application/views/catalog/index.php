@@ -72,10 +72,9 @@
 								<label class="stock <?= $product['stocks'] > 0 ? 'bg-success' : 'bg-danger'; ?>">
 									<?= $product['stocks'] > 0 ? 'In Stock' : 'Out of Stock'; ?>
 								</label>
-								<div class="d-flex justify-content-center">
-
-
-									<img src="<?= base_url('assets/uploads/' . ($product['main_image_url'] ? $product['main_image_url'] : 'default-image.jpg')); ?>"
+								<div class="d-flex justify-content-center"> 
+									<img class="w-75"
+										src="<?= base_url('assets/uploads/' . ($product['main_image_url'] ? $product['main_image_url'] : 'default-image.jpg')); ?>"
 										alt="<?= $product['name']; ?>">
 								</div>
 							</div>

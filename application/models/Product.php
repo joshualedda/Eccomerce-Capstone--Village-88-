@@ -154,12 +154,21 @@ class Product extends CI_Model
 	//Get product Image
 	public function getProductImages($productId)
 	{
-		$sql = "SELECT * FROM images WHERE product_id = ?";
+		$sql = "SELECT * FROM images WHERE product_id = ?;
+		";
 		$query = $this->db->query($sql, array($productId));
 		return $query->result_array();
 	}
 
-
+	public function getProductImagesView($productId)
+	{
+		$sql = "SELECT * FROM images WHERE product_id = ?
+		AND main = 0;
+		";
+		$query = $this->db->query($sql, array($productId));
+		return $query->result_array();
+	
+	}
 	//insert product
 	public function addProduct()
 	{
@@ -228,7 +237,7 @@ class Product extends CI_Model
 		$uploaded_images = array();
 		$config['upload_path'] = 'assets/uploads/';
 		$config['allowed_types'] = 'jpg|jpeg|png|gif';
-		$config['max_size'] = 2048; // 2MB limit
+		$config['max_size'] = 20048; // 8MB limit
 		$this->load->library('upload', $config);
 
 		foreach ($_FILES['images']['name'] as $key => $image) {
@@ -247,8 +256,7 @@ class Product extends CI_Model
 				$data = $this->upload->data();
 				$uploaded_images[] = $data['file_name'];
 			} else {
-				// If there's an error with an image, inform the user about it
-				$this->session->set_flashdata('error_message', $this->upload->display_errors());
+				$this->session->set_flashdata('error_message', "Please reduce the image quality");
 			}
 		}
 
@@ -338,11 +346,16 @@ class Product extends CI_Model
 	//Search Catalog
 	public function filterCatalog($name, $categoryId, $priceOrder)
 	{
-		$sql = "SELECT products.id AS productId, products.name, products.description, products.price, products.stocks,  categories.category AS categoryName,
-				COALESCE(images.image, (SELECT image FROM images WHERE product_id = products.id AND images.main = 1 LIMIT 1)) AS main_image_url
-				FROM products
-				LEFT JOIN images ON images.product_id = products.id
-				LEFT JOIN categories ON categories.id = products.category_id
+		$sql = "SELECT products.id AS productId, 
+		products.name, 
+		products.description, 
+		products.price, 
+		products.stocks, 
+		categories.category AS categoryName,
+		COALESCE(images.image, '') AS main_image_url
+ FROM products
+ LEFT JOIN categories ON categories.id = products.category_id
+ LEFT JOIN images ON images.product_id = products.id AND images.main = 1
 				WHERE 1";
 
 		$params = [];

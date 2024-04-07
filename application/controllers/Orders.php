@@ -81,6 +81,8 @@ class Orders extends CI_Controller
 				echo json_encode(array('success' => false, 'message' => $result['error']));
 			} else {
 				$data['error_message'] = $result['error'];
+				$this->session->set_flashdata('error_message', 'Please fill all required fields');
+
 				redirect('carts');
 			}
 		}
